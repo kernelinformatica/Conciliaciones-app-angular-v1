@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Ficha de Cereal [NOMBRE CEREAL], [CLASE], [COSECHA]</title>
+
+    <!-- Custom fonts for this template -->
+    <link href="../../../../assets/sbadmin2/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template -->
+     <link href="../../../../assets/sbadmin2/css/sb-admin-2.min.css" rel="stylesheet">
+     <!-- Custom styles for this page -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://cdn.datatables.net/v/bs4-4.6.0/jq-3.7.0/dt-2.1.8/datatables.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+  <div class="modal fade" [ngClass]="{'show': verModarDescargaPdf}" [ngStyle]="{'display': verModarDescargaPdf ? 'block' : 'none'}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Descargando resumen</h5>
+        </div>
+        <div class="modal-body">Descargando ficha de cereal  {{ this.paramsRecibidos.cereal }} {{ this.paramsRecibidos.clase }} {{ this.paramsRecibidos.cosecha }} en PDF, aguarde unos instantes mientras se genera la información requerida.</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="verModarDescargaPdf = false">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar getStyleTemplate('navbar-nav', 'background-color')-->
+        <app-sidebar [ngStyle]="{'background-color': bgColorSideBar}" class="side-bar"></app-sidebar>
+        <!-- End of Sidebar -->
+        <app-spiner *ngIf="loading"></app-spiner>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Topbar -->
+                <app-topbar [usuarioCuenta]="usuarioCuenta"></app-topbar>
+                <!-- End of Topbar -->
+
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                  <nav aria-label="breadcrumb" class="custom-breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a (click)="irAInicio()">INICIO</a></li>
+                      <li class="breadcrumb-item"><a (click)="irAResumenCereales()">RESUMEN DE CEREAL</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">FICHA DE CEREAL {{ this.paramsRecibidos.cereal }} {{ this.paramsRecibidos.clase }} {{ this.paramsRecibidos.cosecha }}</li>
+                    </ol>
+                  </nav>
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">{{usuarioCuenta[0].nombre}}</h1>
+                    <p class="mb-2">Cuenta: {{usuarioCuenta[0].id}}</p>
+
+
+
+                    <!-- DataTale -->
+                    <!-- Resumen de Cereales -->
+                 <div class="card shadow mb-4" *ngIf="cantMovFichaCereal > 0 " >
+                      <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}">FICHA DE CEREAL {{ this.paramsRecibidos.cereal }} {{ this.paramsRecibidos.clase }} {{ this.paramsRecibidos.cosecha }}</h6> <div *ngIf="cantMovFichaCereal > 0"><small>Cantidad de registros encontrados </small>  <span class="badge badge-success">{{cantMovFichaCereal }}</span></div>
+                      </div>
+                      <div class="card-body">
+
+
+                          <div class="table-responsive" id="dataTableFichaCereal" >
+                            <table class="table table-striped table-bordered" id="fichaCerealesResumenTabla" width="100%" cellspacing="0">
+                              <thead>
+                                <tr>
+                                  <th>Detalle</th>
+                                  <th class="text-end">Fecha</th>
+                                  <th class="text-end" class="text-end">Nro Comp</th>
+                                  <th class="text-end">Ingreso</th>
+                                  <th class="text-end">Egreso</th>
+                                  <th class="text-end">Saldo</th>
+                                  <th style = "color: grey" *ngIf="this.permisoDescargaComp" class="text-center"><i class="fas fa-download"></i></th>
+
+
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                <tr *ngFor="let item of fichaCereal; let i = index;">
+                                  <td>{{ item.comprobDescri }}</td>
+                                  <td class="text-end">{{ item.fecha }}</td>
+                                  <td class="text-end">{{ item.numeroComprobante }}</td>
+                                  <td class="text-end">{{ item.kilosEntrada | number:'1.0-0' }}</td>
+                                  <td class="text-end">{{ item.kilosSalida | number:'1.0-0' }}</td>
+                                  <td class="text-end">{{ item.kilosSaldo | number:'1.0-0' }}</td>
+                                  <td *ngIf="this.permisoDescargaComp" class="text-center">
+                                    <img
+                                    *ngIf="permisoTipoComprobante(item)"
+                                    src="assets/multimedia/images/icons/comprobantes/{{item.tipoComprobante}}.png"
+                                    (click)="descargaComprobante(item)">
+
+
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+                                  <th>Detalle</th>
+                                  <th class="text-end">Fecha</th>
+
+                                  <th  class="text-end">Nro Comp</th>
+                                  <th class="text-end">Ingreso</th>
+                                  <th class="text-end">Egreso</th>
+                                  <th class="text-end">Saldo</th>
+                                  <th style = "color: grey" *ngIf="this.permisoDescargaComp" class="text-center"><i class="fas fa-download"></i></th>
+                                  </tr>
+
+                                  <td colspan="8" class="text-end">
+                                    <button (click)="descargarReporteCereales()"  class="btn-functions"   title="Descargar Reporte en PDF">
+                                      <img src="assets/multimedia/images/icons/pdfv2.png">
+                                    </button>
+                                    <button (click)="descargarXlsCtaCte(fichaCereal)"   class="btn-functions"  title="Descargar archivo Excel">
+                                      <img src="assets/multimedia/images/icons/xlsx.png">
+                                      <!--<i class="fas file-text-o"></i>-->
+                                    </button>
+                                    <button (click)="descargarCsvCtaCte(fichaCereal)"   class="btn-functions"  title="Descargar archivo Csv">
+
+                                      <img src="assets/multimedia/images/icons/csv_2.png">
+                                      <!--<i class="fas file-text-o"></i>-->
+                                    </button>
+                                  </td>
+
+
+                               </tfoot>
+                            </table>
+
+                          </div>
+
+
+                        </div>
+
+                  </div>
+                  <div  *ngIf="permisoDescargaComp"  class="alert alert-primary" style="font-size: 13px;"  role="alert">
+                    <strong>Importante:</strong> {{mensajePdfDescarga}}
+
+
+                  </div>
+                  <!-- remitos pendientes-->
+
+                  <div class="card shadow mb-4" *ngIf="cantMovFichaRoma > 0 && permisoFicharemitos" >
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}">ROMANEOS PENDIENTES {{ this.paramsRecibidos.cereal }} {{ this.paramsRecibidos.clase }} {{ this.paramsRecibidos.cosecha }}</h6> <div *ngIf="cantMovFichaRoma > 0"><small>Cantidad de registros encontrados </small>  <span class="badge badge-success">{{cantMovFichaRoma }}</span></div>
+                    </div>
+                    <div class="card-body">
+
+
+                        <div class="table-responsive" id="fichaCerealesResumenTabla" >
+                          <table class="table table-striped table-bordered" id="fichaCerealesResumenTabla" width="100%" cellspacing="0">
+                            <thead>
+                              <tr>
+
+                                <th>Fecha</th>
+                                <th class="text-end" class="text-end">Carta Porte</th>
+                                <th class="text-end">Bruto</th>
+                                <th class="text-end">Tara</th>
+                                <th class="text-end">Humedad</th>
+                                <th class="text-end">Mermas</th>
+                                <th class="text-end">Neto</th>
+                                <th class="text-end">saldo</th>
+
+
+
+                              </tr>
+                            </thead>
+
+                            <tbody>
+                              <tr *ngFor="let item of fichaRomPendiente; let i = index;">
+                                <td>{{ item.fecha }}</td>
+                                <td class="text-end">{{ item.cp}}</td>
+                                <td class="text-end">{{ item.bruto  | number:'1.0-0'  }}</td>
+                                <td class="text-end">{{ item.tara  | number:'1.0-0'  }}</td>
+                                <td class="text-end">{{ item.humedad | number:'1.0-0' }}</td>
+                                <td class="text-end">{{ item.mermas | number:'1.0-0' }}</td>
+                                <td class="text-end">{{ item.neto | number:'1.0-0' }}</td>
+
+                                <td class="text-end">{{ item.saldo | number:'1.0-0' }}</td>
+
+
+                              </tr>
+                            </tbody>
+                            <tfoot>
+                              <tr>
+                                <th >Fecha</th>
+                                <th class="text-end" class="text-end">Carta Porte</th>
+                                <th class="text-end">Bruto</th>
+                                <th class="text-end">Tara</th>
+                                <th class="text-end">Humedad</th>
+                                <th class="text-end">Mermas</th>
+                                <th class="text-end">Neto</th>
+                                <th class="text-end">saldo</th>
+
+                                </tr>
+
+                                <td colspan="8" class="text-end">
+                                  <button (click)="descargarReporteCerealesFichaRoma()"  class="btn-functions"   title="Descargar Reporte en PDF">
+                                    <img src="assets/multimedia/images/icons/pdfv2.png">
+                                  </button>
+                                  <button (click)="descargarXlsCtaCte(fichaRomPendiente)"   class="btn-functions"  title="Descargar archivo Excel">
+                                    <img src="assets/multimedia/images/icons/xlsx.png">
+                                    <!--<i class="fas file-text-o"></i>-->
+                                  </button>
+                                  <button (click)="descargarCsvCtaCte(fichaRomPendiente)"   class="btn-functions"  title="Descargar archivo Csv">
+
+                                    <img src="assets/multimedia/images/icons/csv_2.png">
+                                    <!--<i class="fas file-text-o"></i>-->
+                                  </button>
+                                </td>
+
+
+                             </tfoot>
+                          </table>
+
+                        </div>
+
+
+                      </div>
+
+                </div>
+
+
+
+
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+              <div class="container my-auto">
+                <div  class="copyright text-center my-auto">
+                  <div [innerHTML]="copyRigth"></div>
+      
+                </div>
+              </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+
+
+
+
+    <script src="../../../assets/sbadmin2/vendor/jquery-easing/jquery.easing.min.js"></script>-->
+
+    <!-- Custom scripts for all pages-->
+    <script src="../../../assets/sbadmin2/js/sb-admin-2.min.js"></script>
+
+
+
+
+    <script src="https://cdn.datatables.net/v/bs4-4.6.0/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+
+
+
+</body>
+
+</html>

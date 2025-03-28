@@ -1,0 +1,33 @@
+html, body { height: 100%; margin: 0; padding: 0; }
+.login-container {
+  /*background-color: #1C5CBF;*/
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 110vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+.btn {
+  background-color: transparent;
+  border: none;
+
+
+}
+.error-message{
+  border: 1px solid rgb(159, 1, 1);
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bolder;
+}
+.card { background-color: rgba(255, 255, 255, 0.8); }
+.text-centered {
+  text-align: center;
+}

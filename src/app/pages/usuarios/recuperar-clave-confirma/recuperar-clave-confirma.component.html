@@ -1,0 +1,76 @@
+<div class="recupero-clave-confirma-container vh-100 d-flex align-items-center justify-content-center" [style.backgroundImage]="imagenFondo">
+  <div class="container">
+    <div class="row justify-content-center align-items-center">
+      <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="card o-hidden border-0 shadow-lg">
+          <div class="card-body p-0">
+            <div class="row">
+              <!-- Imagen -->
+              <div class="col-lg-5 d-none d-lg-block bg-login-image">
+                <img [src]="'assets/multimedia/images/login/olvido-clave-confirma.png'" alt="Imagen de Portada" class="img-fluid">
+              </div>
+              <!-- Formulario -->
+              <div class="col-lg-7 8-flex align-items-center justify-content-center">
+
+                <div class="text-center">
+
+                  <img [src]="'assets/multimedia/images/logos/gestagro.png'" alt="Imagen de Portada" class="img-fluid">
+                </div>
+                <div class="w-100 p-4">
+                  <div class="card shadow">
+                    <div class="card-header py-3 text-center">
+                      <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fa fa-lock" aria-hidden="true"></i> NUEVA CLAVE
+                      </h6>
+                    </div>
+                    <div class="card-body">
+                      <form [formGroup]="claveForm" (ngSubmit)="confirmarClave()" class="user">
+
+
+                        <div class="form-group">
+                          <input type="password" formControlName="clave" class="form-control form-control-user" id="clave" placeholder="Nueva Clave o Contraseña">
+                          <div *ngIf="claveForm.get('clave').invalid && claveForm.get('clave').touched" class="text-danger">
+                            <small *ngIf="claveForm.get('clave').errors?.['required']">* La clave es obligatoria</small>
+                            <small *ngIf="claveForm.get('clave').errors?.['minlength']">* La clave debe tener al menos 4 caracteres</small>
+                          </div>
+                        </div>
+                        <div class="form-group mt-3">
+                          <input type="password" formControlName="repiteClave" class="form-control form-control-user" id="repiteClave" placeholder="Repita la Clave o Contraseña">
+                          <div *ngIf="claveForm.get('repiteClave').invalid && claveForm.get('repiteClave').touched" class="text-danger">
+                            <small *ngIf="claveForm.get('repiteClave').errors?.['required']">* Repetir la clave es obligatorio</small>
+                            <small *ngIf="claveForm.get('repiteClave').errors?.['notMatching']">* Las claves no coinciden</small>
+                          </div>
+                        </div>
+
+                        <button
+                        type="submit"
+                        class="btn btn-primary btn-user btn-block mt-4"
+                        [disabled]="!claveForm.valid || claveForm.get('clave').value !== claveForm.get('repiteClave').value">
+                        Confirmar
+                      </button>
+
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Fin del Formulario -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-spiner *ngIf="loading"></app-spiner>
+<ng-template #error let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Atención !!</h5>
+  </div>
+  <div class="modal-body">{{ msg }}</div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-user btn-block" (click)="modal.dismiss('cancel')">
+      Aceptar
+    </button>
+  </div>
+</ng-template>

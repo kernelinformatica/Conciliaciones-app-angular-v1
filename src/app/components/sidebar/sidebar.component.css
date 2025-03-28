@@ -1,0 +1,46 @@
+/* src/app/sidebar/sidebar.component.css */
+.navbar-nav {
+  background-color: var(--sidebar-bg-color); /* Color por defecto */
+  color: var(--sidebar-text-color); /* Color de letra */
+}
+
+.bg-gradient-primary {
+  background: var(--sidebar-bg-color); /* Color por defecto */
+  color: var(--sidebar-text-color); /* Color de letra */
+}
+
+.sidebar {
+  background-color: var(--sidebar-bg-color); /* Color por defecto */
+  color: var(--sidebar-text-color); /* Color de letra */
+}
+
+.sidebar-dark {
+  background-color: var(--sidebar-bg-color); /* Color por defecto */
+  color: var(--sidebar-text-color); /* Color de letra */
+}
+
+.accordion {
+  background-color: var(--sidebar-bg-color); /* Color por defecto */
+  color: var(--sidebar-text-color); /* Color de letra */
+}
+.navbar-nav .nav-item{
+
+  color: black !important; /* Color de letra */
+}
+
+
+/* Estilo para el sidebar colapsado */
+.sidebar.collapsed {
+  width: 0;
+  overflow: hidden;
+  transition: width /*0.3s*/;
+  
+}
+
+/* Ajustar el contenido principal cuando el sidebar está colapsado */
+.sidebar.collapsed + .content-wrapper {
+  margin-left: 0;
+  transition: margin-left  0.3s;
+  
+}
+

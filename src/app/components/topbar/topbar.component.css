@@ -1,0 +1,20 @@
+.nav-item.empresaNombre {
+  display: flex;
+  align-items: center; /* Align vertically */
+  margin-right: auto; /* Push to the left */
+  padding-left: 15px; /* Adjust padding if needed */
+}
+.fecha-hoy {
+  font-size: smaller;
+  color: gray;
+  margin-left: auto;
+}
+.btn.btn-link.rounded-circle.mr-3 {
+  border-radius: 50%;
+  margin-right: 1rem;
+  text-decoration: none;
+  color: var(--sidebar-bg-color)
+}
+.btn {
+  border: none; /* Elimina el borde del botón */
+}

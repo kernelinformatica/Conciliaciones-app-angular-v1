@@ -1,0 +1,86 @@
+<div class="login-container" [style.backgroundImage]="imagenFondo"   >
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <div class="row">
+              <div class="col-lg-6 d-none d-lg-block bg-login-image">
+                <img [src]="'assets/multimedia/images/login/' + imagenPortada" alt="Imagen de Portada">
+
+              </div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                    <img
+                      src="assets/multimedia/images/login/gestagro-login.png"
+                      alt="Logo"
+                    />
+                    <!-- Agrega esta línea -->
+                    <h1 class="h4 text-gray-900 mb-4">GESTAGRO</h1>
+
+
+                  </div>
+
+
+                  <div *ngIf="gestagroMensaje != ''" class="error-message">
+                    {{this.gestagroMensaje}}
+                  </div>
+                  <div *ngIf="gestagroMensaje  != ''" class="error-message">
+                     Si el problema persiste póngase en contácto con su Cooperativa asociada.
+                  </div>
+                  <div *ngIf="gestagroStatus == true"  >
+
+                  <form [formGroup]="loginForm" class="user"  (ngSubmit)="onSubmit()">
+                    <div class="form-group">
+                      <input
+                        formControlName="usuario"
+                        type="text"
+                        maxlength="7"  
+                        pattern="^[0-9]{1,7}$"
+                        class="form-control form-control-user text-centered"
+                        placeholder="Ingrese el Usuario"
+                        required
+                      />
+                    </div>  
+                    
+                    <div class="form-group">
+                      <input
+                        formControlName="clave"
+                        type="password"
+
+                        class="form-control form-control-user text-centered"
+                        placeholder="Ingrese la Contraseña"
+                        required
+                      />
+                    </div>
+                    <div *ngIf="loginForm.get('usuario').invalid && loginForm.get('usuario').touched" class="text-danger">
+                      <small *ngIf="loginForm.get('usuario').errors?.['required']">* Este campo 'Usuario' es obligatorio</small>
+                      <small *ngIf="loginForm.get('usuario').errors?.['pattern']">* Solo se permiten números en el 'Usuario' (máximo 7, incluyendo ceros iniciales)</small>
+                    </div>
+                    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+                    <button [ngStyle]="{'color': colorTextoBotones, 'background-color': bgColorBotones}"
+                      type="submit"  class="btn btn-primary btn-user btn-block">
+                      Ingreso
+                    </button>
+                    <p></p>
+                 
+                  </form>
+                  <app-spiner *ngIf="loading"></app-spiner>
+                  <hr />
+                  <div class="text-center">
+                    <a class="small" [ngStyle]="{'color': colorTextos}" (click) = "irAPedirRecuperacion()">¿Olvidó su clave?</a>
+                  </div>
+                 <!-- <div class="text-center">
+                    <a class="small" href="#">Solicite su clave de acceso.</a>
+                  </div>-->
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

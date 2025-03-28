@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>Resumen de Cuenta Corriente</title>
+  </head>
+
+  <body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar getStyleTemplate('navbar-nav', 'background-color')-->
+      <app-sidebar
+        [ngStyle]="{ 'background-color': bgColorSideBar }"
+        class="side-bar"
+      ></app-sidebar>
+      <!-- End of Sidebar -->
+      <app-spiner *ngIf="loading"></app-spiner>
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+          <!-- Topbar -->
+          <app-topbar [usuarioCuenta]="usuarioCuenta"></app-topbar>
+          <!-- End of Topbar -->
+
+          <!-- Begin Page Content -->
+          <div class="container-fluid">
+            <!-- Page Heading -->
+            <h1 class="h3 mb-2 text-gray-800">{{ usuarioCuenta[0].nombre }}</h1>
+            <p class="mb-2">Cuenta: {{ usuarioCuenta[0].id }}</p>
+            <div [ngClass]="{'alert-success': fechasIguales, 'alert-danger': !fechasIguales}"
+              style="font-size: 14px"
+              class="alert"
+              role="alert" >
+              Última actualización:
+              <strong>{{ fechaSaldoActualizacion }}</strong>
+            </div>
+            <div [ngClass]="{'alert-success': +!usuarioCuenta[0].saldoDolar  > 0,'alert-danger': usuarioCuenta[0].saldoDolar}"
+              style="font-size: 14px"
+              class="alert"
+              role="alert" >
+             
+              <div *ngIf="permisoIvaPendienteDolar" >
+                <p class="mb-2"   [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar  > 0 ? 'red' : 'black'}">
+                  Saldo USD: 
+                  <strong> {{ usuarioCuenta[0].saldoDolar  | number : "1.2-2" }}</strong>
+                 
+                </p>
+
+
+                <p class="mb-2"  [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar+totalIvaPend  > 0 ? 'red' : 'black'}">
+                  Iva USD:  <strong> {{ totalIvaPend | number : "1.2-2" }}</strong>
+                 </p>
+
+                <p class="mb-2"  [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar > 0 ? 'red' : 'black'}">
+                  Saldo Vencido en dólares USD: 
+                  <strong>
+
+                    {{ usuarioCuenta[0].saldoDolar+totalIvaPend | number : "1.2-2" }}</strong
+                  >
+                  {{
+                    +usuarioCuenta[0].saldoDolar > 0 ? "(Deudor)" : "(Acreedor)"
+                  }}
+                </p>
+
+              </div>
+
+
+
+
+              <div *ngIf="!permisoIvaPendienteDolar">
+                <p class="mb-2"  [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar > 0 ? 'red' : 'black'}">
+                  Saldo Vencido en dólares USD: 
+                  <strong>
+
+                    {{ usuarioCuenta[0].saldoDolar+totalIvaPend | number : "1.2-2" }}</strong
+                  >
+                  {{
+                    +usuarioCuenta[0].saldoDolar > 0 ? "(Deudor)" : "(Acreedor)"
+                  }}
+                </p>
+
+              </div>
+
+            </div>
+
+            <!-- INFO -->
+            <div
+              *ngIf="cantidadMovimientos > 0"
+              class="alert alert-primary"
+              style="font-size: 13px"
+              role="alert"
+            >
+              <strong>Importante:</strong> La información de su resumen está
+              <strong>actualizada al {{ this.fechaInfoActualizacion }}.</strong>
+              {{ msgFechaActualizacion }}
+            </div>
+
+            <!-- Cuenta Corriente Dolar -->
+            <div class="card shadow mb-4" *ngIf="cantidadMovimientos > 0">
+              <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}"  >
+                  RESUMEN DE CUENTA CORRIENTE EN DOLARES
+                </h6>
+                <div *ngIf="cantidadMovimientos > 0">
+                  <small>Cantidad de registros encontrados: </small>
+                  <span class="badge badge-success">{{
+                    cantidadMovimientos
+                  }}</span>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive" id="dataTableCtaCte">
+                  <table
+                    class="table table-striped table-bordered"
+                    id="resuCtaCteTabla"
+                    width="100%"
+                    cellspacing="0"
+                  >
+                    <thead>
+                      <tr>
+                        <th>Vencimiento</th>
+                        <th>Ingreso</th>
+                        <th>Detalle</th>
+                        <th>Concepto</th>
+                        <th class="text-end">Nro Comp</th>
+                        <th class="text-end">Debe</th>
+                        <th class="text-end">Haber</th>
+                        <th class="text-end">Saldo</th>
+                        <th 
+                          style="color: grey"
+                          class="text-center"
+                          *ngIf="this.permisoDescargaCompDolar"
+                        >
+                          <i class="fas fa-download"></i>
+                        </th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr *ngFor="let item of detalleCtaCte; let i = index">
+                        <td>{{ item.vencimiento }}</td>
+                        <td>{{ item.ingreso }}</td>
+                        <td>{{ item.detalle }}</td>
+                        <td>{{ item.concepto }}</td>
+                        <td class="text-end">{{ item.numero }}</td>
+                        <td class="text-end">
+                          {{ item.importeDebe | number : "1.2-2" }}
+                        </td>
+                        <td class="text-end">
+                          {{ item.importeHaber | number : "1.2-2" }}
+                        </td>
+                        <td class="text-end">
+                          {{ item.importeSaldo | number : "1.2-2" }}
+                        </td>
+                        <td *ngIf=" this.permisoDescargaCompDolar ||  permisoTipoComprobante(item) " class="text-center">
+                          <img
+                            *ngIf="tipoComprobanteMostrar(item)"
+                            src="assets/multimedia/images/icons/comprobantes/{{
+                              iconoArchivo(item)
+                            }}.png"
+                            (click)="descargaComprobante(item)"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th>Vencimiento</th>
+                        <th>Ingreso</th>
+                        <th>Detalle</th>
+                        <th>Concepto</th>
+                        <th class="text-end">Nro Comp</th>
+                        <th class="text-end">Debe</th>
+                        <th class="text-end">Haber</th>
+                        <th class="text-end">Saldo</th>
+                        <th *ngIf="this.permisoDescargaCompDolar"></th>
+                      </tr>
+
+                  <td colspan="9" *ngIf="permisoIvaPendienteDolar"> 
+                        <!-- Iva pendiente Dolares, solo si es aranguren-->
+
+                        <div
+                          class="card shadow mb-4"
+                          *ngIf="cantidadMovimientosIvaPend > 0"
+                        >
+                          <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}">
+                              IVA PENDIENTE DE FACTURAR POR FECHA DE VENCIMIENTO
+                            </h6>
+                            <div *ngIf="cantidadMovimientos > 0">
+                              <small>Cantidad de registros encontrados: </small>
+                              <span class="badge badge-success">{{
+                                cantidadMovimientosIvaPend
+                              }}</span>
+                            </div>
+                          </div>
+                          <div class="card-body">
+                            <div class="table-responsive" id="dataTableCtaCteIvaPend">
+                              <table
+                                class="table table-striped table-bordered"
+                                id="resuCtaCteTabla"
+                                width="100%"
+                                cellspacing="0"
+                              >
+                                <thead>
+                                  <tr>
+                                    <th>Vencimiento</th>
+                                    <th>Detalle</th>
+                                    <th class="text-end">Neto Sin Iva</th>
+                                    <th class="text-end">Iva</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                <tr *ngFor="let item of detalleIvaPend; let i = index;">
+                                <td>{{ item.vence }}</td>
+                                <td>{{ item.detalle }}</td>
+                                <td class="text-end">{{ item.neto | number:'1.2-2' }}</td>
+                                <td class="text-end">{{ item.iva | number:'1.2-2'}}</td>
+                                
+                                
+                              </tr>
+                                </tbody>
+                                <tfoot>
+                                  
+                                  <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th class="text-end">{{ totalNetoIvaPend | number:'1.2-2'}}</th>
+                                    <th class="text-end">{{ totalIvaPend | number:'1.2-2'}}</th>
+                                  </tr>
+
+                                </tfoot>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+
+                       
+                      
+                    </tfoot>
+                    <div>
+                    
+                  
+                     
+                    </div>
+                    
+                  </table>
+                  <div class="text-end">
+                    <button
+                      (click)="descargarReporteCtaCte()"
+                      class="btn-functions"
+                      title="Descargar Reporte en PDF"
+                    >
+                      <img src="assets/multimedia/images/icons/pdfv2.png" />
+                    </button>
+                    <button
+                      (click)="descargarXlsCtaCte(detalleCtaCte)"
+                      class="btn-functions"
+                      title="Descargar archivo Excel"
+                    >
+                      <img src="assets/multimedia/images/icons/xlsx.png" />
+                      <!--<i class="fas file-text-o"></i>-->
+                    </button>
+                    <button
+                      (click)="descargarCsvCtaCte(detalleCtaCte)"
+                      class="btn-functions"
+                      title="Descargar archivo Csv"
+                    >
+                      <img src="assets/multimedia/images/icons/csv_2.png" />
+                      <!--<i class="fas file-text-o"></i>-->
+                    </button>
+                  </div>
+                  
+                
+                </div>
+              </div>
+            </div>
+
+            <!-- INFO  FOOTER-->
+            <div
+              *ngIf="cantidadMovimientos > 0"
+              class="alert alert-primary"
+              style="font-size: 13px"
+              role="alert"
+            >
+              <strong>Importante:</strong> {{ msgSobreDisponiblidadPDFCtacte }}
+            </div>
+          </div>
+
+          
+          <!-- /.container-fluid -->
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+          <div class="container my-auto">
+            <div  class="copyright text-center my-auto">
+              <div [innerHTML]="copyRigth"></div>
+
+            </div>
+          </div>
+        </footer>
+        <!-- End of Footer -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+    <!-- Descargarndo resumen modal -->
+    <div
+      class="modal fade"
+      [ngClass]="{ show: verModarDescargaPdf }"
+      [ngStyle]="{ display: verModarDescargaPdf ? 'block' : 'none' }"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Descargando resumen
+            </h5>
+          </div>
+          <div class="modal-body">
+            Descargando su resumen en PDF, aguarde unos instantes mientras se
+            genera la información requerida.
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="verModarDescargaPdf = false"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

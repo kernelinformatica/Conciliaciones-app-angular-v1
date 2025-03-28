@@ -1,0 +1,57 @@
+import { NovedadesFotos } from './../novedades/novedadesFotos';
+/**
+* Esta clase se creo para representar la parte novedades (noticas de la coope)
+* las noticias estan en la base de la pagina web en produccion 192.168.254.249 base coope
+*/
+
+export class Novedades {
+
+  //---------------------------------------------//
+  // DECLARACION DE LAS PROPIEDADES QUE NECESITO //
+  //---------------------------------------------//
+  public id : number;
+  public titulo: string;
+  public idSeccion: number;
+  public resumen: string;
+  public resumenExtendido: string;
+  public descripcion: string;
+  public tipo: string;
+  public seccion: string;
+  public categoria: number;
+  public fechaInicio: string;
+  public fechaFin:string;
+  public horaNoticia: string;
+  public fechaNoticia: string;
+  public comentarios: string;
+  public fotos: NovedadesFotos[];
+
+
+  //---------------------------------------------//
+//code":1,"status":200,"detail":"Retorna las noticias activas de la cooperativa","Author":"Kernel Inform\u00e1tica: Cooperativa de Trabajo Ltda
+  constructor(novedades : any){
+    let [nov] = novedades;
+    this.id = nov.id;
+    this.titulo = nov.titulo;
+    this.idSeccion = nov.idSeccion;
+    this.resumen = nov.resumen;
+    this.resumenExtendido = nov.resumenExtendido;
+    this.descripcion =  nov.descripcion;
+    this.tipo = nov.tipo;
+    this.seccion = nov.seccion;
+    this.categoria = nov.categoria;
+    this.fechaInicio = nov.fechaInicio;
+    this.fechaFin = nov.fechaFin;
+    this.horaNoticia = nov.horaNoticia;
+    this.fechaNoticia = nov.fechaNoticia;
+    this.comentarios = nov.comentarios;
+    this.fotos = [];
+    nov.fotos.forEach(variable => {
+      this.fotos.push(variable);
+  });
+    
+   
+    
+
+   
+  }
+}

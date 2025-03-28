@@ -1,0 +1,85 @@
+html, body { height: 100%; margin: 0; padding: 0;
+
+}
+.recupero-clave-confirma-container {
+  /*background-color: #1C5CBF;*/
+
+  background: rgb(246,148,0);
+  background: linear-gradient(189deg, rgba(246,148,0,1) 0%, rgba(255,255,255,1) 100%);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 110vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.error-message{
+  border: 1px solid rgb(159, 1, 1);
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bolder;
+}
+.form-control-user {
+  text-align: center;
+}
+
+.btn {
+  border: none; /* Elimina el borde del botón */
+}
+
+
+/* Ajusta el contenedor principal para centrar vertical y horizontalmente */
+.recupero-clave-confirma-container {
+  height: 100vh; /* Altura total de la ventana */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fc; /* Fondo opcional */
+}
+
+/* Imagen en la sección izquierda */
+.bg-login-image img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* Estilo del formulario */
+.card {
+  max-width: 800px; /* Limitar el tamaño del formulario */
+  margin: 0 auto;
+}
+
+.form-control-user {
+  font-size: 1rem;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.btn-user {
+  border-radius: 10px;
+}
+
+.text-danger small {
+  font-size: 0.9rem;
+}
+
+/* Respuesta a dispositivos más pequeños */
+@media (max-width: 768px) {
+  .bg-login-image {
+    display: none; /* Ocultar la imagen en pantallas pequeñas */
+  }
+
+  .recupero-clave-confirma-container {
+    padding: 20px;
+  }
+}
+
+

@@ -13,36 +13,50 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/gestagro-extranet-client-v2",
+            "outputPath": "dist",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
-            "assets": [
+            "assets": [ "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
+
               }
             ],
             "styles": [
+              "src/assets/sbadmin2/css/sb-admin-2.min.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/startbootstrap-sb-admin-2/css/sb-admin-2.min.css",
+              "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css",
               "src/styles.css"
+
             ],
-            "scripts": []
+            "scripts": [
+            "node_modules/datatables.net/js/dataTables.min.js",
+            "node_modules/pdfmake/build/pdfmake.min.js",
+            "node_modules/pdfmake/build/vfs_fonts.js",
+            "src/assets/sbadmin2/js/sb-admin-2.min.js",
+            "node_modules/jquery/dist/jquery.min.js",
+            "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+           ]
           },
           "configurations": {
             "production": {
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "4kB",
+                  "maximumError": "16MB"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumError": "16MB"
                 }
               ],
               "outputHashing": "all"
@@ -56,6 +70,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
@@ -92,5 +107,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "b49fffb7-64b0-45af-b08c-c2725ff47bb8"
   }
 }

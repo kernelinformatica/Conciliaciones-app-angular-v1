@@ -1,0 +1,91 @@
+<div [ngClass]="{'collapsed': isCollapsed}" class="sidebar" >
+  <!-- Contenido del sidebar -->
+
+
+
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar"
+[ngStyle]="{'background-color': getStyleTemplate('navbar-nav', 'background-color')}">
+
+  <!-- Sidebar - Brand -->
+  <a class="sidebar-brand d-flex align-items-center justify-content-center" >
+      <div><img  class="img-fluid" src="assets/multimedia/images/logos/{{this.empresa.id}}.png" (click)="irAlhome()"></div>
+
+  </a>
+
+  <!-- Divider  ,
+'color' : getStyleTemplate('sidebar', 'color'),
+'font-family': getStyleTemplate('body', 'font-family')-->
+  <hr class="sidebar-divider my-0">
+
+  <!-- Nav Item - Dashboard
+  <li class="nav-item active" [ngStyle]="{'color': getStyleTemplate('nav-link', 'color')}" >
+      <a class="nav-link" href="/gestagro">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Inicio</span></a>
+  </li>
+-->
+  <!-- Divider -->
+  <hr class="sidebar-divider" *ngIf="this.cambioClave > 0">
+
+  <!-- Heading -->
+  <div *ngIf="this.cambioClave > 0" class="sidebar-heading" [ngStyle]="{'color': getStyleTemplate('sidebar-heading', 'color')}">
+      SUS OPCIONES
+  </div>
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li *ngIf="this.cambioClave > 0" class="nav-item" [ngStyle]="{'color': getStyleTemplate('nav-item .nav-link', 'color')}" >
+      <a *ngIf="this.tieneResumenCtaCte == 'S'"
+          class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+          [ngStyle]="{'color': getStyleTemplate('nav-item .nav-link', 'color')}"
+          aria-expanded="true" aria-controls="collapseTwo"  [ngStyle]="{'color': getStyleTemplate('nav-item .nav-link', 'color')}" >
+          <i class="fas fa-fw fa-user" [ngStyle]="{'color': getStyleTemplate('nav-item .nav-link', 'color')}" ></i>
+          <span>Cuenta Corriente</span>
+      </a>
+      <div  id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Información:</h6>
+              <a class="collapse-item" (click)="irCuentaCorriente()" >Resumen en Pesos</a>
+              <a *ngIf="tieneResumenCtaCteDolar == 'S'" class="collapse-item" (click)="irCuentaCorrienteDolar()">Resumen en Dolares</a>
+              
+          </div>
+      </div>
+  </li>
+
+
+
+  <!-- Divider -->
+  <hr  class="sidebar-divider" *ngIf="this.tieneResumenCereal && this.cambioClave > 0">
+
+  <!-- Heading
+  <div class="sidebar-heading"  [ngStyle]="{'color': getStyleTemplate('sidebar-heading', 'color')}">
+      CERALES
+  </div>-->
+
+  <!-- Nav Item - Pages Collapse Menu -->
+  <li *ngIf="this.cambioClave > 0" class="nav-item">
+      <a *ngIf="this.tieneResumenCereal" class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" [ngStyle]="{'color': getStyleTemplate('nav-item .nav-link', 'color')}"
+          aria-expanded="true" aria-controls="collapsePages">
+          <i class="fas fa-fw fa-folder"  [ngStyle]="{'color': getStyleTemplate('nav-item .nav-link', 'color')}"></i>
+          <span>Cereales</span>
+      </a>
+      <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+              <h6 class="collapse-header">Información de cereales:</h6>
+              <a class="collapse-item" (click)="irCuentaACereales()">Resumen de Cereales</a>
+             
+              <div class="collapse-divider"></div>
+              <!---->
+            </div>
+      </div>
+  </li>
+
+
+  <!-- Divider -->
+  <hr class="sidebar-divider d-none d-md-block">
+
+
+
+</ul>
+
+</div>

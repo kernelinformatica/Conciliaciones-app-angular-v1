@@ -1,0 +1,93 @@
+<div class="recupero-clave-container" [style.backgroundImage]="imagenFondo"  >
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-10 col-lg-12 col-md-9">
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <div class="row">
+              <div class="col-lg-5 d-none d-lg-block bg-login-image">
+                <img [src]="'assets/multimedia/images/login/olvido-clave.png'" alt="Imagen de Portada">
+
+              </div>
+              <div class="col-lg-7">
+
+                  <div class="text-center">
+
+
+                    <div class="p-4">
+                      <div class="text-center">
+                        <img  src="assets/multimedia/images/login/gestagro-login.png"
+                          alt="Logo">
+
+
+
+
+                          <h1 class="h4 text-gray-900 mb-2">¿Olvidó su clave?</h1>
+                          <p class="mb-4"><small>Simplemente ingrese número de cuenta y a continuación le enviaremos un email con las instrucciones para recuperar su clave de acceso.</small></p>
+                      </div>
+
+                      <form class="user" [formGroup]="envioMailForm" (ngSubmit)="envioDeMail()">
+                        <div class="form-group">
+                          <input type="text" 
+                         
+                          pattern="^[0-9]{1,7}$"
+                          formControlName="cuenta" maxlength="7" class="form-control form-control-user" id="cuenta" placeholder="Ingrese su número de cuenta">
+
+
+                          
+
+
+                          <div *ngIf="envioMailForm.get('cuenta').invalid && envioMailForm.get('cuenta').touched" class="text-danger">
+
+
+                            <small *ngIf="envioMailForm.get('cuenta').errors?.['required']">* El número de cuenta es obligatorio.</small>
+                          
+                            <small *ngIf="envioMailForm.get('cuenta').errors?.['pattern']">* Solo se permiten números en el nro de cuenta (máximo 7, incluyendo ceros iniciales)</small>
+                          </div>
+                        </div>
+                        <button [disabled]="envioMailForm.invalid" type="submit" class="btn btn-primary btn-user btn-block">
+                          Recuperar clave
+                        </button>
+
+                      </form>
+
+
+                  </div>
+                  <div class="text-center">
+                    <a class="small" (click) = "irAlLogin()">Volver al inicio</a>
+                  </div>
+
+                  </div>
+
+
+
+
+
+
+                  <app-spiner *ngIf="loading"></app-spiner>
+
+
+                 <!-- <div class="text-center">
+                    <a class="small" href="#">Solicite su clave de acceso.</a>
+                  </div>-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<ng-template #error let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Atención !!</h5>
+
+  </div>
+  <div class="modal-body">{{ msg }}</div>
+  <div class="modal-footer">
+    <button [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" type="button" class="btn btn-primary btn-user btn-block" (click)="modal.dismiss('cancel')">
+      Aceptar
+    </button>
+
+  </div>
+</ng-template>

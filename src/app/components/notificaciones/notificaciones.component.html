@@ -1,0 +1,96 @@
+
+<li *ngIf="cambioClave > 0 && cantidadMensajes > 0" class="nav-item dropdown no-arrow mx-1">
+
+  <!--<div *ngFor="let notificaciones of notificaciones">
+    <div [ngClass]="notificaciones.titulo">
+      {{ notificaciones.mensaje }}
+      <button (click)="removeNotification(notificaciones.idMensaje)">X</button>
+    </div>
+  </div>-->
+
+
+  <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+
+      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i class="fas fa-bell fa-fw" ></i>
+      <span *ngIf="cantidadMensajes-cantidadMensajesNuevos > 0 "  class="badge badge-danger badge-counter large-badge">{{  cantidadMensajes > 0  ? cantidadMensajes-cantidadMensajesNuevos  : '' }} {{ cantidadMensajes > 1 ? '+' : ''}}  </span>
+  </a>
+  <div  class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+      aria-labelledby="alertsDropdown" >
+      <h6 class="dropdown-header" style="border: 0;"   [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }"
+        >
+          Centro de Mensajes
+      </h6>
+      <div  *ngFor="let notificaciones of notificaciones">
+        <a class="dropdown-item d-flex align-items-center" (click) = "mostrarMensaje(content, notificaciones)"
+        [ngClass]="{'visto': notificaciones.visto}"
+        (click)="notificaciones.visto ? null   : marcarComoLeido(notificaciones, true)">
+
+        <div  class="mr-3" [ngClass]="notificaciones.titulo">
+            <div *ngIf="notificaciones.tipo === 'info'" class="icon-circle bg-primary" >
+                <i class="fas fa fa-info text-white"></i>
+            </div>
+            <div *ngIf="notificaciones.tipo === 'success'" class="icon-circle bg-success">
+
+              <i class="fas fa fa-check text-white"></i>
+            </div>
+            <div *ngIf="notificaciones.tipo === 'warning'" class="icon-circle bg-warning">
+              <i class="fas fa-exclamation  text-white"></i>
+            </div>
+            <div *ngIf="notificaciones.tipo === 'danger'" class="icon-circle bg-danger" >
+             <div>
+              <i class="fas fa-times  text-white"></i>
+             </div>
+           </div>
+
+          <div *ngIf="notificaciones.tipo === 'update'" class="icon-circle bg-success" >
+            <i class="fa fa-refresh text-white" aria-hidden="true"></i>
+          </div>
+          <div *ngIf="notificaciones.tipo === 'ingreso-planta'" class="icon-circle bg-success" >
+            <i class="fa fa-truck text-black" aria-hidden="true"></i>
+          </div>
+          <div *ngIf="notificaciones.tipo === 'saldos'" class="icon-circle bg-success" >
+            <i class="fa fa-usd text-black" aria-hidden="true"></i>
+          </div>
+
+        </div>
+
+        <div class="info-mensaje">
+          <div class="small text-gray-500">{{ notificaciones.fechaEnvio }}</div>
+          <span [ngClass]="{'font-weight-bold': !notificaciones.visto}">{{ notificaciones.titulo }}</span>
+
+      </div>
+       <span class="boton-eliminar" (click)="marcarComoBorrado(notificaciones, $event, content)">
+        <i class="fa fa-times" aria-hidden="true"  title="Eliminar notificación"></i>
+      </span>
+
+
+      <!-- Loader -->
+      <div class="loader" *ngIf="notificaciones.loading"></div>
+        </a>
+
+      </div>
+
+<!--
+      <a class="dropdown-item text-center small text-gray-500" href="#">Mostrar todas las alertas</a>
+      -->
+  </div>
+</li>
+ <!-- Modal Leer mensaje -->
+ <ng-template #content let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">{{selectedItem.titulo}}</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" [innerHTML]="selectedItem?.mensaje"> </div>
+  <div class="modal-footer">
+    <button [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">
+      Aceptar
+    </button>
+  </div>
+</ng-template>
+
+
+

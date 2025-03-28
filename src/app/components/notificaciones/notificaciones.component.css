@@ -1,0 +1,51 @@
+.modal-backdrop {
+  z-index: 1040 !important;
+
+}
+
+.modal {
+  z-index: 1100 !important
+}
+
+.btn {
+  border: none; /* Elimina el borde del botón */
+}
+.visto {
+  opacity: 0.5; /* Ajusta la opacidad según sea necesario */
+}
+
+
+.dropdown-item {
+  position: relative;
+  z-index: 1;
+}
+
+.boton-eliminar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  color: black;
+  font-size: 12px;
+  padding: 5px;
+  z-index: 2;
+}
+.loader {
+  border: 4px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 20px;
+  height: 20px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 10px;
+  right: 30px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.large-badge {
+  font-size: 0.9rem; /* Ajusta este valor según tus necesidades */
+}

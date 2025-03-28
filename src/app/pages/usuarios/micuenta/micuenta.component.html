@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>MI CUENTA</title>
+</head>
+
+<body id="page-top">
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+    <!-- Sidebar getStyleTemplate('navbar-nav', 'background-color')-->
+    <app-sidebar [ngStyle]="{ 'background-color': bgColorSideBar }" class="side-bar"></app-sidebar>
+    <!-- End of Sidebar -->
+    <app-spiner *ngIf="loading"></app-spiner>
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+      <!-- Main Content -->
+      <div id="content">
+        <app-topbar [usuarioCuenta]="usuarioCuenta"></app-topbar>
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+          <!-- Topbar -->
+
+          <!-- End of Topbar -->
+          <!-- Page Heading -->
+          <h1 class="h3 mb-2 text-gray-800">{{ usuarioCuenta[0].nombre }}</h1>
+          <p class="mb-2">Cuenta: {{ usuarioCuenta[0].id }}</p>
+
+          <div class="card-body">
+            <div class="p-7">
+              <div class="card shadow mb-4" *ngIf="this.usuarioCuenta">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}">
+                    <i class="fa fa-envelope" aria-hidden="true"></i> CORREO ELECTRONICO
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive" id="formMiCuenta">
+                    <form [formGroup]="miCuentaForm" (ngSubmit)="mostrarConfirmacion(content)" class="user">
+                      <!-- <div class="form-group row">
+                                  <div class="col-sm-12">
+                                    <input type="text" formControlName="nombre" class="form-control form-control-user" id="nombre" placeholder="Nombre y Apellido">
+                                  </div>
+                                </div>-->
+                      <div class="form-group">
+                        <input type="email" formControlName="email" class="form-control form-control-user" id="email"
+                          placeholder="Correo / Email" />
+                        <div *ngIf="
+                              miCuentaForm.get('email').invalid &&
+                              miCuentaForm.get('email').touched
+                            " class="text-danger">
+                          <small *ngIf="
+                                miCuentaForm.get('email').errors['required']
+                              "><strong>El correo es obligatorio</strong></small>
+                          <small *ngIf="miCuentaForm.get('email').errors['email']"><strong>El formato del correo es
+                              inválido</strong></small>
+                        </div>
+                      </div>
+                      <button type="submit" [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" class="btn btn-primary btn-user btn-block">
+                        Cambiar
+                      </button>
+                    </form>
+                  </div>
+
+                  <!-- Modal de confirmación -->
+                  <ng-template #content let-modal>
+                    <div class="modal-header">
+                      <h5 class="modal-title">Confirmación</h5>
+                      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      ¿Estás seguro de que deseas modificar tus datos?
+                    </div>
+                    <div class="modal-footer">
+                      <button   [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel')">
+                        Cancelar
+                      </button>
+                      <button [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }"
+                       type="button" class="btn btn-primary" (click)="confirmarCambio(modal)">
+                        Aceptar
+                      </button>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!claveCambiada" class="alert alert-danger" style="font-size: 13px" role="alert">
+            <strong><i class="fa fa-warning" aria-hidden="true"></i>
+              Importante:</strong>
+            {{ mensajeCambioDeClave }}
+          </div>
+
+          <div class="card-body">
+            <div class="p-7">
+              <div class="card shadow mb-4" *ngIf="this.usuarioCuenta">
+                <div class="card-header py-3">
+                  <h6  class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}"   >
+                    <i class="fa fa-lock" aria-hidden="true"></i> CAMBIO DE CLAVE
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive" id="claveForm">
+                    <form [formGroup]="claveForm" (ngSubmit)="cambiarClave()" class="user">
+                      <div class="form-group row">
+                        <div class="col-sm-12 mb-3 mb-sm-0">
+
+                          <input type="password" formControlName="claveActual" class="form-control form-control-user" id="claveActual" placeholder="Clave o Contraseña actual">
+                          <div *ngIf="claveForm.get('claveActual').invalid && claveForm.get('claveActual').touched" class="text-danger">
+                            <small *ngIf="claveForm.get('claveActual').errors?.['required']">* La clave actual es obligatoria</small>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+
+
+                        <div class="col-sm-12 mb-3 mb-sm-0">
+
+                          <input type="password" formControlName="clave" class="form-control form-control-user" id="clave" placeholder="Nueva Clave o Contraseña">
+                          <div *ngIf="claveForm.get('clave').invalid && claveForm.get('clave').touched" class="text-danger">
+                            <small *ngIf="claveForm.get('clave').errors?.['required']">* La clave es obligatoria</small>
+                            <small *ngIf="claveForm.get('clave').errors?.['minlength']">* La clave debe tener al menos 4 caracteres</small>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="col-sm-12 mb-3 mb-sm-0">
+                          <input type="password" formControlName="repiteClave" class="form-control form-control-user" id="repiteClave" placeholder="Repita la Clave o Contraseña">
+                          <div *ngIf="claveForm.get('repiteClave').invalid && claveForm.get('repiteClave').touched" class="text-danger">
+                            <small *ngIf="claveForm.get('repiteClave').errors?.['required']">* Repetir la clave es obligatorio</small>
+                            <small *ngIf="claveForm.get('repiteClave').errors?.['notMatching']">* Las claves no coinciden</small>
+                          </div>
+                        </div>
+                      </div>
+                      <button type="submit" [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" class="btn btn-primary btn-user btn-block">
+                        Cambiar
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.container-fluid -->
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div  class="copyright text-center my-auto">
+            <div [innerHTML]="copyRigth"></div>
+
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+    </div>
+    <!-- End of Content Wrapper -->
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <ng-template #error let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Atención !!</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">{{ msg }}</div>
+    <div class="modal-footer">
+      <button [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" type="button" class="btn btn-primary btn-user btn-block" (click)="modal.dismiss('cancel')">
+        Aceptar
+      </button>
+    </div>
+  </ng-template>
+
+
+</body>
+
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Resumen de Cuenta Corriente</title>
+
+    <!-- Custom fonts for this template -->
+    <link href="../../../assets/sbadmin2/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <!-- Custom styles for this template -->
+     <link href="../../../assets/sbadmin2/css/sb-admin-2.min.css" rel="stylesheet">
+     <!-- Custom styles for this page -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://cdn.datatables.net/v/bs4-4.6.0/jq-3.7.0/dt-2.1.8/datatables.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar getStyleTemplate('navbar-nav', 'background-color')-->
+        <app-sidebar [ngStyle]="{'background-color': bgColorSideBar}" class="side-bar"></app-sidebar>
+        <!-- End of Sidebar -->
+        <app-spiner *ngIf="loading"></app-spiner>
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <app-topbar [usuarioCuenta]="usuarioCuenta"></app-topbar>
+                <!-- End of Topbar -->
+
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">{{usuarioCuenta[0].nombre}}</h1>
+                    <p class="mb-2">Cuenta: {{usuarioCuenta[0].id}}</p>
+                    <!--
+                    <div [ngClass]="{'alert-success': fechasIguales, 'alert-danger': !fechasIguales}" style="font-size: 14px;" class="alert" role="alert">
+                      Última actualización: <strong>{{fechaSaldoActualizacion}}</strong>
+
+                      <p class="mb-2" [ngStyle]="{'color': +usuarioCuenta[0].saldoPesos > 0 ? 'red' : 'black'}">
+                        Saldo Vencido: <strong>${{usuarioCuenta[0].saldoPesos | number:'1.2-2' }}</strong>
+                        {{ +usuarioCuenta[0].saldoPesos > 0 ? '(Deudor)' : '(Acreedor)' }}
+                      </p>
+                    </div>
+                    -->
+
+                    <!-- INFO -->
+                    <div  *ngIf="cantidadMovimientos > 0"  class="alert alert-primary" style="font-size: 13px;"  role="alert">
+                      <strong>Importante:</strong> La información de su resumen está <strong>actualizada al {{ this.fechaInfoActualizacion }}.</strong> (S.E.U.O) Los movimientos posteriores a esta fecha y hora se reflejarán en el próximo período de actualización.
+
+
+                    </div>
+                    <!-- DataTale -->
+                    <!-- Resumen de Cereales -->
+                 <div class="card shadow mb-4" *ngIf="cantMovResuCereal > 0 " >
+                      <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}">RESUMEN GRAL DE CEREALES</h6> <div *ngIf="cantMovResuCereal > 0"><small>Cantidad de registros encontrados </small>  <span class="badge badge-success">{{cantMovResuCereal }}</span></div>
+                      </div>
+                      <div class="card-body">
+
+
+                          <div class="table-responsive" id="dataTableResumenCereal" >
+                            <table class="table table-striped table-bordered" id="resuCerealesResumenTabla" width="100%" cellspacing="0">
+                              <thead>
+                                <tr>
+                                  <th>Cereal</th>
+                                  <th>Clase</th>
+                                  <th class="text-end">Cosecha</th>
+                                  <th class="text-end">Kg Cert</th>
+                                  <th class="text-end">Kg Sin Cert</th>
+                                  <th class="text-end">Saldo</th>
+                                  <th class="text-center">Ficha</th>
+                                  <th *ngIf="fichaRemitos" class="text-center">Pend</th>
+
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                <tr *ngFor="let item of resumenCereal; let i = index;">
+                                  <td>{{ item.cereal }}</td>
+                                  <td>{{ item.clase }}</td>
+                                  <td class="text-end">{{ item.cosecha }}</td>
+                                  <td class="text-end">{{ item.kilosCertificados | number:'1.0-0' }}</td>
+                                  <td class="text-end">{{ item.kilosACertificar | number:'1.0-0' }}</td>
+
+                                  <td class="text-end">{{ item.kilosTotales | number:'1.0-0' }}</td>
+                                  <td  class="text-center">
+
+                                    <i class="fa fa-external-link" tooltip="Ver ficha de cereal" (click)="irAFichaDeCereal(item)" [ngStyle]="{'color': getStyleTemplate('table-container-buttons', 'color')}" aria-hidden="true"></i>
+                                  </td>
+                                  <td  *ngIf="fichaRemitos"  class="text-center" >
+                                    <div *ngIf="item.kilosACertificar > 0"><i tooltip="Ver remitos pendientes" (click)="irARemitosPendientes(item)" class="fa fa-eye" [ngStyle]="{'color': getStyleTemplate('table-container-buttons', 'color')}" aria-hidden="true"></i></div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+                                  <th>Cereal</th>
+                                  <th>Clase</th>
+                                  <th class="text-end">Cosecha</th>
+                                  <th class="text-end">Kg Cert</th>
+                                  <th class="text-end">Kg Sin Cert</th>
+                                  <th class="text-end">Saldo</th>
+                                  <th   class="text-center">Ficha</th>
+                                  <th *ngIf="fichaRemitos" class="text-center">Pend</th>
+                                  </tr>
+
+
+
+
+                               </tfoot>
+                            </table>
+
+                          </div>
+
+
+                        </div>
+
+                  </div>
+
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+              <div class="container my-auto">
+                <div  class="copyright text-center my-auto">
+                  <div [innerHTML]="copyRigth"></div>
+      
+                </div>
+              </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+
+
+   
+    <!-- Bootstrap core JavaScript-
+    <script src="../../../assets/sbadmin2/vendor/jquery/jquery.min.js"></script>
+    <script src="../../../assets/sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+
+    <script src="../../../assets/sbadmin2/vendor/jquery-easing/jquery.easing.min.js"></script>-->
+
+    <!-- Custom scripts for all pages-->
+    <script src="../../../assets/sbadmin2/js/sb-admin-2.min.js"></script>
+
+
+
+
+    <script src="https://cdn.datatables.net/v/bs4-4.6.0/jq-3.7.0/dt-2.1.8/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+
+
+
+</body>
+
+</html>
