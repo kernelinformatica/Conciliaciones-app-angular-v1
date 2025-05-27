@@ -282,12 +282,15 @@ export class ConciliaInformeComponent {
   }
 
   confirmarConciliacion(): void {
-    this.movimientosConciliados = this.movimientos.filter(
-      (item) => item.seleccionado
-    );
+    this.movimientosConciliados = this.movimientos
+      .filter((item) => item.seleccionado)
+      .map((item) => ({
+        ...item,
+        cuenta_contable: item.cuenta_contable || '0' // Ajusta según sea necesario
+      }));
 
     console.log('Registros conciliados:', this.movimientosConciliados);
-  }
+}
   // TOTALIZADORES ///
 
   getTotalSaldo(): number {
@@ -303,4 +306,20 @@ export class ConciliaInformeComponent {
       0
     );
   }
+
+confirmarConcilacionFinal(){
+  const x = this.movimientosConciliados
+  debugger
+  alert("ENVIO EL OBJECTO MOVIMIENTOS CONCILIADOS AL SERVICIO QUE GRABA LA CONCILIACION DEFINITIVAMENTE " + JSON.stringify(this.movimientosConciliados.length));
+
+}
+
+validarCuentaContable(item: any): void {
+  const regex = /^\d{10}$/;
+  if (!regex.test(item.cuenta_contable)) {
+    item.cuenta_contable = ''; // Borra el valor si no cumple con el formato
+  }
+}
+
+
 }
