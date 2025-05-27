@@ -22,10 +22,10 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" translate="no">
 
     <!-- Page Wrapper -->
-    <div id="wrapper">
+    <div  id="wrapper" class="notranslate">
 
         <!-- Sidebar getStyleTemplate('navbar-nav', 'background-color')-->
         <app-sidebar [ngStyle]="{'background-color': bgColorSideBar}" class="side-bar"></app-sidebar>
@@ -48,14 +48,13 @@
                     <!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">{{usuarioCuenta[0].nombre}}</h1>
                     <p class="mb-2">Cuenta: {{usuarioCuenta[0].id}}</p>
-                    <div [ngClass]="{'alert-success': fechasIguales, 'alert-danger': !fechasIguales}" style="font-size: 14px;" class="alert" role="alert">
-                      Última actualización: <strong>{{fechaSaldoActualizacion}}</strong>
+                    
 
-                      <p class="mb-2" [ngStyle]="{'color': +usuarioCuenta[0].saldoPesos > 0 ? 'red' : 'black'}">
-                        Saldo Vencido: <strong>${{usuarioCuenta[0].saldoPesos | number:'1.2-2' }}</strong>
-                        {{ +usuarioCuenta[0].saldoPesos > 0 ? '(Deudor)' : '(Acreedor)' }}
-                      </p>
-                    </div>
+
+
+
+
+
 
                     <!-- INFO -->
                     <div  *ngIf="cantidadMovimientos > 0"  class="alert alert-primary" style="font-size: 13px;"  role="alert">
@@ -77,7 +76,7 @@
                                   <tr>
                                     <th>Vencimiento</th>
                                     <th>Ingreso</th>
-                                   
+
                                     <th>Detalle</th>
                                     <th>Concepto</th>
                                     <th class="text-end">Nro Comp</th>
@@ -91,7 +90,7 @@
 
                                 <tbody>
                                   <tr *ngFor="let item of detalleCtaCte; let i = index;">
-                                  
+
                                     <td>{{ item.vencimiento }}</td>
                                     <td>{{ item.ingreso }}</td>
                                     <td>{{ item.detalle }}</td>
@@ -100,16 +99,22 @@
                                     <td class="text-end">{{ item.importeDebe | number:'1.2-2' }}</td>
                                     <td class="text-end">{{ item.importeHaber | number:'1.2-2' }}</td>
                                     <td class="text-end">{{ item.importeSaldo | number:'1.2-2'}}</td>
-                                    <td *ngIf="this.permisoDescargaComp" class="text-center">
+                                      <td *ngIf="this.permisoDescargaComp" class="text-center">
                                       <img
                                       *ngIf="permisoTipoComprobante(item)"
                                       src="assets/multimedia/images/icons/comprobantes/{{item.idTipoComprobante}}.png"
                                       (click)="descargaComprobante(item)">
+                                    <!--  <td *ngIf="this.permisoDescargaComp" class="text-center">
+                                        <img
+                                        *ngIf="item.pdfExiste && permisoTipoComprobante(item) && permisoTipoComprobante2(item)"
+
+                                        src="assets/multimedia/images/icons/comprobantes/{{item.idTipoComprobante}}.png"
+                                        (click)="descargaComprobante(item)">-->
                                   </tr>
                                 </tbody>
                                 <tfoot>
                                   <tr>
-                                    
+
                                     <th>Vencimiento</th>
                                     <th>Ingreso</th>
                                     <th>Detalle</th>
@@ -118,7 +123,7 @@
                                     <th class="text-end">Debe</th>
                                     <th class="text-end">Haber</th>
                                     <th class="text-end">Saldo</th>
-                                    <th></th>
+                                    <th *ngIf="this.permisoDescargaComp" ></th>
 
                                   </tr>
                                     <td colspan="8" class="text-end">
@@ -161,7 +166,7 @@
               <div class="container my-auto">
                 <div  class="copyright text-center my-auto">
                   <div [innerHTML]="copyRigth"></div>
-    
+
                 </div>
               </div>
             </footer>

@@ -11,9 +11,8 @@ export class Cuenta {
   public nombre: string | undefined;
   public email: string | undefined;
   public tipoUsuario: number | 0;
-  public saldoPesos: string | "0";
-  public saldoDolar: string | "0";
-  public fecha: Date;
+  public tipoUsuarioNombre: string | undefined;
+   public fecha: Date;
   public ultActualizacion: string | "";
   public claveMarcaCambio: number | 0;
 
@@ -25,10 +24,10 @@ export class Cuenta {
       this.email = cuenta.email;
       this.nombre = cuenta.nombre;
       this.tipoUsuario= cuenta.tipoUsuario;
-      this.saldoPesos = cuenta.saldoPesos;
-      this.saldoDolar = cuenta.saldoDolar;
       this.fecha = cuenta.fecha;
+      this.tipoUsuarioNombre = cuenta.tipoUsuarioNombre;
       this.claveMarcaCambio = cuenta.cambioClaveMarca;
       this.ultActualizacion = cuenta.ultActualizacion
+
   }
 }

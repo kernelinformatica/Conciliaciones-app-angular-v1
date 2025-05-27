@@ -80,7 +80,7 @@ export class CuentaCorrienteService {
 
   private getURLServicio(cuenta: string) {
     // Por ahora devuelvo el string como esta, despues hay que usar el token
-    return Configuraciones.urlBase+"/detalleccuss/"+cuenta;
+    return Configuraciones.urlBase+"/detallecc/"+cuenta;
   }
   private getURLServicioDolarIvaPend(cuenta: string) {
     // Por ahora devuelvo el string como esta, despues hay que usar el token

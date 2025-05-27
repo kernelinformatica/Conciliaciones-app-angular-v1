@@ -24,6 +24,7 @@ export class GlobalService {
 
   */
   setEmpresa(data: any): void {
+
     localStorage.setItem("empresa", JSON.stringify(data));
   }
 
@@ -36,19 +37,19 @@ export class GlobalService {
 
   /*
 
-  Status gestagro
+  Status Servicio web
 
   */
 
-  setStatusGestagro(data: any): void {
+  setStatusServicioRest(data: any): void {
     this.servicioDisponible = data;
   }
 
-  getStatusGestagro(): any {
+  getStatusServicioRest(): any {
     return this.servicioDisponible;
   }
 
-  clearStatusGestagro(): void {
+  clearStatusServicioRest(): void {
     this.servicioDisponible = false;
 
   }
@@ -137,6 +138,11 @@ export class GlobalService {
 
   }
 
+  getPermisoPendienteFacturar():any{
+    const permisos = localStorage.getItem('permisos');
+    const permisosArray = permisos ? JSON.parse(permisos) : [];
+    return permisosArray.find(permiso => permiso === "comprobantesPendientesFacturar");
+  }
   getPermisoIvaPendiente(): any {
     const permisos = localStorage.getItem('permisos');
     const permisosArray = permisos ? JSON.parse(permisos) : [];
@@ -228,13 +234,13 @@ getPermisoTipoComprobantesPermitidos(item):any{
     let importe = item.importeDebe+item.importeHaber
 
     if (item.idTipoComprobante == 1){
-      if (item.detalle == "Pago Total" && item.concepto == "AGROQUIMICOS"){
+      if (item.detalle == "Pago Total" && item.concepto == "AGROQUIMICOS" && item.concepto == "CONTABLES" && item.concepto == "DIFERIDOS") {
         // Son Pesifcaciones de dolares, que no llevan comprobantes para Descargar
 
         return false;
 
       }else{
-        if (item.detalle == "Ticket Combustible" || item.detalle== "TICKET" || item.detalle == "Ticket") {
+        if (item.detalle == "Ticket Combustible" || item.detalle== "TICKET" || item.detalle == "Ticket"  || item.concepto == "CONTABLES" || item.concepto == "DIFERIDOS") {
           return false
         }else{
           return this.esImportePositivo(importe);

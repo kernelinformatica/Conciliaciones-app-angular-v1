@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit {
   private permisoLogueoPorEmpresa: Boolean = false;
   public versionSistema: String = environment.versionSistema;
   public backgroundImageUrl: string = '';
-  public imgFront: string = 'ga-login-front.png';
+  public imgFront: string = 'login-front.png';
   public imagenFondo :string =''
 
   bgColorBotones:string="#4E73DF";
@@ -87,9 +87,9 @@ export class LoginComponent implements OnInit {
   }
 
   empresaModelo!: Empresa;
-  imagenPortada : string = "ga-login-front.png";
-  gestagroStatus = false;
-  gestagroMensaje = ""
+  imagenPortada : string = "login-front.png";
+  apiStatus = false;
+  apiMensaje = ""
   loading = true;
   ngOnInit() {
     this.loading = true;
@@ -102,7 +102,7 @@ export class LoginComponent implements OnInit {
       usuario: ['', Validators.required],
       clave: ['', Validators.required]
     });
-    this.imagenFondo = 'url(assets/multimedia/images/login/ga-bg.jpg)';
+    this.imagenFondo = 'url(assets/multimedia/images/login/bg.jpg)';
     this.route.queryParams.subscribe((params) => {
     let hash = ""
     if (params['hashId']){
@@ -111,7 +111,7 @@ export class LoginComponent implements OnInit {
       hash = this.globalService.getHashEmpresa()
     }
     if (params['hashIdPass']){
-       // VIENE CON CAMBIO DE CLAVE ASI QUE REDIRECINO 
+       // VIENE CON CAMBIO DE CLAVE ASI QUE REDIRECINO
       this.hashIdPass = params['hashIdPass'];
       this.irAconfirmacionCambioDeClave(this.hashIdPass, this.hashId)
     }else{
@@ -131,9 +131,9 @@ export class LoginComponent implements OnInit {
 
         if (response && Object.keys(response).length > 0) {
           this.loading = false;
-          this.gestagroStatus = true
-          this.gestagroMensaje = ''
-          this.globalService.setStatusGestagro(this.gestagroStatus)
+          this.apiStatus = true
+          this.apiMensaje = ''
+          this.globalService.setStatusServicioRest(this.apiStatus)
 
           this.hashId = hash;
 
@@ -184,17 +184,18 @@ export class LoginComponent implements OnInit {
         } else {
           this.loading = false;
           // Maneja el caso cuando el objeto está vacío
-          this.gestagroMensaje = 'Gestagro no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
-          this.gestagroStatus = false
+          this.apiMensaje = 'El servicio no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
+          this.apiStatus = false
 
         }
      },
      error => {
-      this.gestagroStatus = false
-      this.globalService.setStatusGestagro(this.gestagroStatus)
-      this.gestagroMensaje =  'Gestagro no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
+      debugger
+      this.apiStatus = false
+      this.globalService.setStatusServicioRest(this.apiStatus)
+      this.apiMensaje =  'El Servicio no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
       // Maneja el error en la solicitud HTTP
-      console.error(this.gestagroMensaje);
+      console.error(this.apiMensaje);
     });
 
 
@@ -221,12 +222,17 @@ export class LoginComponent implements OnInit {
 
   }
 
+  irAKernelInformatica(){
 
-  
+    window.open('https://www.kernelinformatica.com.ar', '_blank');
+  }
+
+
+
   irAconfirmacionCambioDeClave(hashIdPass: string, hashId: string){
-  
+
     this.router.navigate(['recuperar-clave-confirma'], { queryParams: { hashIdPass, hashId } })
- 
+
    }
 
   enableDismissTrigger(): void {
@@ -296,15 +302,15 @@ export class LoginComponent implements OnInit {
       }, 5000);
       try {
         const response : any = await this.loginService.loginUser(this.loginForm.value);
-
-        if (response && response.codigo === "OK") {
+        debugger
+        if (response && response.estado === "Ok") {
 
           const usu = this.globalService.getUsuarioLogueado();
-          this.errorMessage = "Bienvenido "+usu.cuenta.id+" : "+usu.cuenta.nombre
-          if (usu.cuenta.claveMarcaCambio == 0){
+          this.errorMessage = "Bienvenido "+usu.usuario.id+" : "+usu.usuario.nombre
+          if (usu.usuario.claveMarcaCambio == 0){
             this.router.navigate(['cambio-clave-de-acceso'])
           }else{
-            this.router.navigate(['gestagro'])
+            this.router.navigate(['conciliacion'])
           }
         } else if (response && response.codigo === "ERROR") {
 

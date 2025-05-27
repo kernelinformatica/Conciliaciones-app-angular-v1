@@ -54,9 +54,9 @@ export class CerealesService {
       params: params
     };
       return this.http.get(url,  httpOptions)
-    }
+  }
 
-    getFichaRomPendientes(cuenta: string, cereal: string, clase:string, cosecha:string): Observable<any> {
+   getFichaRomPendientes(cuenta: string, cereal: string, clase:string, cosecha:string): Observable<any> {
       const usuario: string = cuenta
 
       const url = this.getURLServicioFichaRomaneos(usuario);

@@ -7,7 +7,7 @@ import { Usuario } from '../../models/usuario';
 import { CommonModule } from '@angular/common';
 import { TemplateEstilos } from '../../models/template-estilos';
 import { Template } from '../../models/template';
-
+import { MenuItem } from '../../models/menuItem';
 import { StyleService } from '../../services/sytle.service';
 
 import 'bootstrap';
@@ -24,23 +24,10 @@ export class SidebarComponent implements OnInit  {
  empresa:any;
  funciones: Funciones | undefined;
  permisos: string[] = []
- // ctacteng serve
- tieneResumenCtaCte : string | "N" | undefined;
- tieneResumenCtaCteDolar : string | "N" | undefined;
- tieneResumenCtacteDescargaCompUss: string | "N" | undefined;
- tieneResumenCtacteDescargaComp:string | "N" | undefined;
- //cereales
- tieneResumenCereal: string  | "N" | undefined;
- tieneFichaRemitos:string | "N" | undefined;
- tieneFichaCombustibles:string | "N" | undefined;
- tieneFichaCerealDescargaComp:string | "N" | undefined;
- tieneFichaRomaneosPendientes:string | "N" | undefined;
- //otros
- tieneCatalogoDeProductos:string | "N" | undefined;
- tienePedidoDeFondos:string | "N" | undefined;
- tieneOrdenesVentaDeCereal:string | "N" | undefined;
+ menu: MenuItem[] = [];
  tieneNoticias:string | "N" | undefined;
-
+ tieneAccesoConciliar:string | "N" | undefined;
+ tieneAccesoAbms:string | "N" | undefined;
  tieneOFertasCaur:string | "N" | undefined;
  tieneOfertas:string | "N" | undefined;
  cambioClave : any;
@@ -69,17 +56,19 @@ ngOnInit(): void {
   }
 
   const usuarioLogueado = this.globalService.getUsuarioLogueado()
-  this.cambioClave = usuarioLogueado.cuenta.claveMarcaCambio
+  this.menu =usuarioLogueado.menu
+  this.cambioClave = usuarioLogueado["marca_cambio"]
   this.permisos = this.globalService.getPermisos();
 
   // Construyo el menu basado en la lista de funciones
   this.armaMenu();
   this.empresa = usuarioLogueado.empresa
+
  }
 
 
 irAdashboard(){
-  this.router.navigate(['/gestagro']);
+  this.router.navigate(['/conciliacion']);
 }
 
 getStyleTemplate(elemento:string, propiedad:string) {
@@ -90,34 +79,23 @@ getStyleTemplate(elemento:string, propiedad:string) {
 
   irAlhome(){
     if(this.cambioClave> 0){
-      this.router.navigate(['gestagro']);
+      this.router.navigate(['conciliacion']);
     }
   }
-
+  irAModulo(item){
+    alert(item.nombreForm)
+    this.router.navigate([item.nombreForm]);
+  }
 
   armaMenu(){
 
     if (this.permisos && this.permisos.length > 0){
       for (let i = 0; i < this.permisos.length; i++) {
 
-        if (this.permisos[i] == "resumenCtaCte"){
-          this.tieneResumenCtaCte = "S";
-        }else if(this.permisos[i] == "resumenCereal"){
-          this.tieneResumenCereal = "S"
-        }else if(this.permisos[i] == "detalleCtaCteDolar"){
-          this.tieneResumenCtaCteDolar = "S"
-        }else if(this.permisos[i] == "detalleCtaCteDolar"){
-          this.tieneResumenCtaCteDolar = "S"
-        }else if(this.permisos[i] == "fichaRemitos"){
-          this.tieneFichaRemitos = "S"
-        }else if(this.permisos[i] == "fichaRomaneosPendientes"){
-          this.tieneFichaRomaneosPendientes = "S"
-        }else if(this.permisos[i] == "ordenesDeVentaDeCerealWeb"){
-          this.tieneOrdenesVentaDeCereal = "N"
-        }else if(this.permisos[i] == "pedidoDeFondosWeb"){
-          this.tienePedidoDeFondos = "N"
-        } else if(this.permisos[i] == "fichaCombustibles"){
-           this.tieneFichaCombustibles = "N"
+        if (this.permisos[i]["menu"] == "conciliar"){
+          this.tieneAccesoConciliar = "S";
+        }else if(this.permisos[i]["menu"] == "tablas"){
+          this.tieneAccesoAbms = "S"
         }
 
 

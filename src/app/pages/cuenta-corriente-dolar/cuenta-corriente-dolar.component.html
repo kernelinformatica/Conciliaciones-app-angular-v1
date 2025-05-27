@@ -13,9 +13,9 @@
     <title>Resumen de Cuenta Corriente</title>
   </head>
 
-  <body id="page-top">
+  <body id="page-top" translate="no">
     <!-- Page Wrapper -->
-    <div id="wrapper">
+    <div id="wrapper" class="notranslate">
       <!-- Sidebar getStyleTemplate('navbar-nav', 'background-color')-->
       <app-sidebar
         [ngStyle]="{ 'background-color': bgColorSideBar }"
@@ -43,55 +43,7 @@
               Última actualización:
               <strong>{{ fechaSaldoActualizacion }}</strong>
             </div>
-            <div [ngClass]="{'alert-success': +!usuarioCuenta[0].saldoDolar  > 0,'alert-danger': usuarioCuenta[0].saldoDolar}"
-              style="font-size: 14px"
-              class="alert"
-              role="alert" >
-             
-              <div *ngIf="permisoIvaPendienteDolar" >
-                <p class="mb-2"   [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar  > 0 ? 'red' : 'black'}">
-                  Saldo USD: 
-                  <strong> {{ usuarioCuenta[0].saldoDolar  | number : "1.2-2" }}</strong>
-                 
-                </p>
-
-
-                <p class="mb-2"  [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar+totalIvaPend  > 0 ? 'red' : 'black'}">
-                  Iva USD:  <strong> {{ totalIvaPend | number : "1.2-2" }}</strong>
-                 </p>
-
-                <p class="mb-2"  [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar > 0 ? 'red' : 'black'}">
-                  Saldo Vencido en dólares USD: 
-                  <strong>
-
-                    {{ usuarioCuenta[0].saldoDolar+totalIvaPend | number : "1.2-2" }}</strong
-                  >
-                  {{
-                    +usuarioCuenta[0].saldoDolar > 0 ? "(Deudor)" : "(Acreedor)"
-                  }}
-                </p>
-
-              </div>
-
-
-
-
-              <div *ngIf="!permisoIvaPendienteDolar">
-                <p class="mb-2"  [ngStyle]="{ color: +usuarioCuenta[0].saldoDolar > 0 ? 'red' : 'black'}">
-                  Saldo Vencido en dólares USD: 
-                  <strong>
-
-                    {{ usuarioCuenta[0].saldoDolar+totalIvaPend | number : "1.2-2" }}</strong
-                  >
-                  {{
-                    +usuarioCuenta[0].saldoDolar > 0 ? "(Deudor)" : "(Acreedor)"
-                  }}
-                </p>
-
-              </div>
-
-            </div>
-
+            
             <!-- INFO -->
             <div
               *ngIf="cantidadMovimientos > 0"
@@ -135,10 +87,10 @@
                         <th class="text-end">Debe</th>
                         <th class="text-end">Haber</th>
                         <th class="text-end">Saldo</th>
-                        <th 
+                        <th
                           style="color: grey"
                           class="text-center"
-                          *ngIf="this.permisoDescargaCompDolar"
+                          *ngIf="permisoDescargaCompDolar"
                         >
                           <i class="fas fa-download"></i>
                         </th>
@@ -161,9 +113,18 @@
                         <td class="text-end">
                           {{ item.importeSaldo | number : "1.2-2" }}
                         </td>
-                        <td *ngIf=" this.permisoDescargaCompDolar ||  permisoTipoComprobante(item) " class="text-center">
-                          <img
-                            *ngIf="tipoComprobanteMostrar(item)"
+
+
+                          <td *ngIf="this.permisoDescargaCompDolar &&  permisoTipoComprobante(item)" class="text-center">
+
+                            <!-- <img  *ngIf="tipoComprobanteMostrar(item) && item.pdfExiste &&  permisoTipoComprobante2(item)"
+                            src="assets/multimedia/images/icons/comprobantes/{{
+                              iconoArchivo(item)
+                            }}.png"
+                            (click)="descargaComprobante(item)"-->
+
+
+                          <img  *ngIf="tipoComprobanteMostrar(item)"
                             src="assets/multimedia/images/icons/comprobantes/{{
                               iconoArchivo(item)
                             }}.png"
@@ -185,7 +146,7 @@
                         <th *ngIf="this.permisoDescargaCompDolar"></th>
                       </tr>
 
-                  <td colspan="9" *ngIf="permisoIvaPendienteDolar"> 
+                  <td colspan="9" *ngIf="permisoIvaPendienteDolar">
                         <!-- Iva pendiente Dolares, solo si es aranguren-->
 
                         <div
@@ -215,8 +176,8 @@
                                   <tr>
                                     <th>Vencimiento</th>
                                     <th>Detalle</th>
-                                    <th class="text-end">Neto Sin Iva</th>
-                                    <th class="text-end">Iva</th>
+                                    <th class="text-end">Neto Sin IVA</th>
+                                    <th class="text-end">IVA</th>
                                   </tr>
                                 </thead>
 
@@ -226,18 +187,18 @@
                                 <td>{{ item.detalle }}</td>
                                 <td class="text-end">{{ item.neto | number:'1.2-2' }}</td>
                                 <td class="text-end">{{ item.iva | number:'1.2-2'}}</td>
-                                
-                                
+
+
                               </tr>
                                 </tbody>
                                 <tfoot>
-                                  
-                                  <tr>
+
+                                 <!-- <tr>
                                     <th></th>
                                     <th></th>
                                     <th class="text-end">{{ totalNetoIvaPend | number:'1.2-2'}}</th>
                                     <th class="text-end">{{ totalIvaPend | number:'1.2-2'}}</th>
-                                  </tr>
+                                  </tr>-->
 
                                 </tfoot>
                               </table>
@@ -245,15 +206,15 @@
                           </div>
                         </div>
 
-                       
-                      
+
+
                     </tfoot>
                     <div>
-                    
-                  
-                     
+
+
+
                     </div>
-                    
+
                   </table>
                   <div class="text-end">
                     <button
@@ -280,8 +241,8 @@
                       <!--<i class="fas file-text-o"></i>-->
                     </button>
                   </div>
-                  
-                
+
+
                 </div>
               </div>
             </div>
@@ -297,7 +258,7 @@
             </div>
           </div>
 
-          
+
           <!-- /.container-fluid -->
         </div>
         <!-- End of Main Content -->

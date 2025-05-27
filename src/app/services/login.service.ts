@@ -40,7 +40,11 @@ export class LoginService {
     try {
       const hash = CryptoJS.MD5(login.clave);
       const url = this.getURLServicio(login.usuario);
-      const params = {};
+      const params = {
+        username:login.usuario,
+        password: login.clave,
+        clientId: 2
+      };
       const httpOptions = {
         headers: new HttpHeaders({
           clave: hash.toString(),
@@ -51,18 +55,19 @@ export class LoginService {
       this.usuarioActual = data;
 
       //if (data.datos.empresa.accesoPlafaforma === true) {
-        if (this.usuarioActual.control.codigo === 'OK') {
+        if (this.usuarioActual.control.estado === 'Ok') {
           const control = this.usuarioActual.control;
-          this.usuarioActual = new Usuario(this.usuarioActual.datos);
-          this.globalService.setEmpresa(this.usuarioActual.empresa);
-          this.globalService.setUsuarioLogueado(this.usuarioActual)
-          this.globalService.setPermisos(this.usuarioActual.funciones.listaFunciones)
-          this.templateActivo = data.datos.templates
+          this.usuarioActual = this.usuarioActual.usuario;
+          this.globalService.setEmpresa(data.empresa);
+          this.globalService.setUsuarioLogueado(this.usuarioActual);
+          this.globalService.setPermisos(data.usuario.grupos.grupo.permisos)
+          this.templateActivo = data.empresa.templates
           this.globalService.settemplateActivo(this.templateActivo)
-          this.globalService.setToken(this.usuarioActual.token);
+          this.globalService.setToken(data.token);
           this.logueado = true;
           this.versionGestagro = control.versionLib;
           this.versionServicio = control.version;
+
 
 
 
@@ -86,41 +91,7 @@ export class LoginService {
     }
   }
 
-/*
-   consultarPedidoClave(hashId: string) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const url = this.getUrlConsultaPedidoCambioClave();
-        const params = {
 
-        };
-        const httpOptions = {
-          headers: new HttpHeaders({
-            hashId : hashId
-          }),
-        };
-
-        this.http.post(url, params, httpOptions).subscribe({
-          next: (data: any) => {
-
-            if (data.control.codigo == 'OK') {
-              resolve({ email: data.control.descripcion });
-            } else {
-              resolve(null);
-            }
-          },
-          error: (error: any) => {
-            reject(error);
-          },
-        });
-      } catch (error: any) {
-        alert('Error: Ocurrio un error general, intente nuevamente más tarde.');
-        const dataError = JSON.parse(error.error);
-        reject(dataError.control.descripcion);
-      }
-    });
-  }
-*/
 
 async consultarPedidoClave(hashIdPass: string,): Promise<any> {
 
@@ -252,7 +223,7 @@ async consultarPedidoClave(hashIdPass: string,): Promise<any> {
    */
   private getURLServicio(usuario: string) {
     // Por ahora devuelvo el string como esta, despues hay que usar el token
-    return Configuraciones.authUrl+usuario;
+    return Configuraciones.authUrl;
   }
 
   /**
@@ -290,6 +261,6 @@ async consultarPedidoClave(hashIdPass: string,): Promise<any> {
    * Esta funcion devuelve la URL del recurso Dummy
    */
   private getURLDummy() {
-    return Configuraciones.dummyUrl;
+    return Configuraciones.dummyUrl
   }
 }

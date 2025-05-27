@@ -123,15 +123,14 @@ export class CambiarClaveComponent implements OnInit, AfterViewInit {
 
         this.usuarioCuenta = [
           {
-            id : this.usuarioLogueado.cuenta.id,
-            nombre: this.usuarioLogueado.cuenta.nombre,
-            email: this.usuarioLogueado.cuenta.email,
-            tipoUsuario: this.usuarioLogueado.cuenta.tipoUsuario,
-            saldoPesos : this.usuarioLogueado.cuenta.saldoPesos,
-            saldoDolar: this.usuarioLogueado.cuenta.saldoDolar,
-            fecha: this.usuarioLogueado.cuenta.fecha,
-            claveMarcaCambio : this.usuarioLogueado.cuenta.claveMarcaCambio,
-            ultActualizacion: this.usuarioLogueado.cuenta.ultActualizacion
+            id : this.usuarioLogueado["id"],
+            nombre:this.usuarioLogueado["nombre_apellido"],
+            email: this.usuarioLogueado["email"],
+            tipoUsuario :this.usuarioLogueado["grupos"]["grupo"]["id_grupo"],
+            tipoUsuarioNombre : this.usuarioLogueado["grupos"]["grupo"]["descripcion"],
+            fecha:  new Date(),
+            claveMarcaCambio : this.usuarioLogueado["marca_cambio"],
+            ultActualizacion : "",
 
           }
         ];
@@ -167,7 +166,7 @@ export class CambiarClaveComponent implements OnInit, AfterViewInit {
   mostrarRespuesta(template: TemplateRef<any>, msg:string) {
     this.msg = msg
     this.modalRef = this.modalService.open(template, { backdrop: 'static', keyboard: false });
-    
+
   }
 
 
@@ -186,7 +185,7 @@ export class CambiarClaveComponent implements OnInit, AfterViewInit {
 
 
   async cambioDeClaveoConfirmado(clave: string, claveAnterior:string) : Promise<any> {
-    
+
     this.loading = true;
     setTimeout(() => {
 
@@ -194,14 +193,14 @@ export class CambiarClaveComponent implements OnInit, AfterViewInit {
     }, 2000);
     try {
       this.usuarioService.cambiarClave(this.usuarioLogueado.cuenta.id, clave, claveAnterior).subscribe((response: any) => {
-        
+
           let resp = response.control.descripcion;
           let codigo = response.control.codigo;
           alert(resp)
           if (codigo == "OK"){
             this.logout();
           }
-          
+
           this.loading = false;
         },
         (error: any) => {
@@ -210,7 +209,7 @@ export class CambiarClaveComponent implements OnInit, AfterViewInit {
           this.loading = false;
         }
 
-     
+
     );
 
 

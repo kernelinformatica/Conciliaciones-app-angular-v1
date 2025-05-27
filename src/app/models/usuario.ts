@@ -14,6 +14,7 @@ export class Usuario {
   //---------------------------------------------//
 
   //public control: Control;
+  public control :Control;
   public empresa : Empresa;
   public cuenta : Cuenta;
   public token : Token;
@@ -22,7 +23,7 @@ export class Usuario {
 
   // parseo el mensaje
   constructor(usuario : any) {
-    //this.control = new Control (usuario.control);
+    this.control = new Control (usuario.control);
     this.empresa = new Empresa(usuario.empresa);
     this.cuenta = new Cuenta(usuario.cuenta);
     this.token = new Token(usuario.token);

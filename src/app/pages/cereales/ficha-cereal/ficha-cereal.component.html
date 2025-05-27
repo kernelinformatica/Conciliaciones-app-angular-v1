@@ -22,7 +22,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" translate="no">
   <div class="modal fade" [ngClass]="{'show': verModarDescargaPdf}" [ngStyle]="{'display': verModarDescargaPdf ? 'block' : 'none'}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -102,10 +102,18 @@
                                   <td class="text-end">{{ item.kilosSalida | number:'1.0-0' }}</td>
                                   <td class="text-end">{{ item.kilosSaldo | number:'1.0-0' }}</td>
                                   <td *ngIf="this.permisoDescargaComp" class="text-center">
+                                   <!-- <img
+                                    *ngIf="permisoTipoComprobante(item) && item.pdfExiste &&  permisoTipoComprobante2(item)"
+                                    src="assets/multimedia/images/icons/comprobantes/{{item.tipoComprobante}}.png"
+                                    (click)="descargaComprobante(item)">-->
+
+
                                     <img
                                     *ngIf="permisoTipoComprobante(item)"
                                     src="assets/multimedia/images/icons/comprobantes/{{item.tipoComprobante}}.png"
                                     (click)="descargaComprobante(item)">
+
+
 
 
                                 </tr>
@@ -249,7 +257,7 @@
               <div class="container my-auto">
                 <div  class="copyright text-center my-auto">
                   <div [innerHTML]="copyRigth"></div>
-      
+
                 </div>
               </div>
             </footer>

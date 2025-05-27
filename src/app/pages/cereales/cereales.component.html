@@ -22,10 +22,10 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" translate="no">
 
     <!-- Page Wrapper -->
-    <div id="wrapper">
+    <div id="wrapper" class="notranslate">
 
         <!-- Sidebar getStyleTemplate('navbar-nav', 'background-color')-->
         <app-sidebar [ngStyle]="{'background-color': bgColorSideBar}" class="side-bar"></app-sidebar>
@@ -104,7 +104,7 @@
                                     <i class="fa fa-external-link" tooltip="Ver ficha de cereal" (click)="irAFichaDeCereal(item)" [ngStyle]="{'color': getStyleTemplate('table-container-buttons', 'color')}" aria-hidden="true"></i>
                                   </td>
                                   <td  *ngIf="fichaRemitos"  class="text-center" >
-                                    <div *ngIf="item.kilosACertificar > 0"><i tooltip="Ver remitos pendientes" (click)="irARemitosPendientes(item)" class="fa fa-eye" [ngStyle]="{'color': getStyleTemplate('table-container-buttons', 'color')}" aria-hidden="true"></i></div>
+                                    <div *ngIf="item.kilosACertificar > 0"><i tooltip="Ver Romaneos pendientes" (click)="irARemitosPendientes(item)" class="fa fa-eye" [ngStyle]="{'color': getStyleTemplate('table-container-buttons', 'color')}" aria-hidden="true"></i></div>
                                   </td>
                                 </tr>
                               </tbody>
@@ -145,7 +145,7 @@
               <div class="container my-auto">
                 <div  class="copyright text-center my-auto">
                   <div [innerHTML]="copyRigth"></div>
-      
+
                 </div>
               </div>
             </footer>
@@ -165,7 +165,7 @@
 
 
 
-   
+
     <!-- Bootstrap core JavaScript-
     <script src="../../../assets/sbadmin2/vendor/jquery/jquery.min.js"></script>
     <script src="../../../assets/sbadmin2/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

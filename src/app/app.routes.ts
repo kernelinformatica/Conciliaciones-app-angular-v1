@@ -14,6 +14,8 @@ import { CambiarClaveComponent } from './pages/usuarios/cambiar-clave/cambiar-cl
 import { RecuperarClaveComponent } from './pages/usuarios/recuperar-clave/recuperar-clave.component';
 import { RecuperarClaveConfirmaComponent } from './pages/usuarios/recuperar-clave-confirma/recuperar-clave-confirma.component';
 import { TesterComponent } from './pages/tester/tester.component';
+import { ConciliaImportaComponent } from './pages/conciliacion/concilia-importa/concilia-importa.component';
+import { ConciliaInformeComponent } from './pages/conciliacion/concilia-informe/concilia-informe.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -22,14 +24,17 @@ export const routes: Routes = [
   { path: 'tester', component: TesterComponent },
   { path: 'recuperar-clave', component: RecuperarClaveComponent },
   { path: 'recuperar-clave-confirma', component: RecuperarClaveConfirmaComponent },
-  { path: 'gestagro', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'conciliacion', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'conciliacion-importar-datos', component: ConciliaImportaComponent, canActivate: [AuthGuard] },
   { path: 'cuenta-corriente', component: CuentaCorrienteComponent, canActivate: [AuthGuard]},
   { path: 'cuenta-corriente-dolar', component: CuentaCorrienteDolarComponent, canActivate: [AuthGuard]},
   { path: 'resumen-de-cereales', component: CerealesComponent, canActivate: [AuthGuard]},
   { path: 'ficha-de-cereales', component: FichaCerealComponent, canActivate: [AuthGuard]},
   { path: 'ficha-de-remitos-pendientes', component: FichaRomaneosPendComponent, canActivate: [AuthGuard]},
   { path: 'mi-cuenta', component: MicuentaComponent, canActivate: [AuthGuard]},
+  { path: 'conciliacion-informe', component: ConciliaInformeComponent, canActivate: [AuthGuard]},
   { path: 'cambio-clave-de-acceso', component: CambiarClaveComponent, canActivate: [AuthGuard]},
+
   { path: '**', redirectTo: '/login', pathMatch: 'full' },
 
 

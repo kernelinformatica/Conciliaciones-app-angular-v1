@@ -13,11 +13,11 @@ export class LogoutComponent {
     private globalService: GlobalService,) {
     let usuarioLogueado = globalService.getUsuarioLogueado();
     this.authService.logout();
-    if (usuarioLogueado) { 
-      window.location.href = "http://"+usuarioLogueado.empresa.dominio
+    if (usuarioLogueado) {
+      window.location.href = "http://localhost:4200"
     }else{
       this.router.navigate(['/login']);
     }
-   
+
   }
 }

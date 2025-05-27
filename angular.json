@@ -28,22 +28,22 @@
               }
             ],
             "styles": [
-              "src/assets/sbadmin2/css/sb-admin-2.min.css",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/startbootstrap-sb-admin-2/css/sb-admin-2.min.css",
               "node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css",
+              "src/assets/sbadmin2/css/sb-admin-2.min.css",
               "src/styles.css"
-
             ],
-            "scripts": [
-            "node_modules/datatables.net/js/dataTables.min.js",
-            "node_modules/pdfmake/build/pdfmake.min.js",
-            "node_modules/pdfmake/build/vfs_fonts.js",
-            "src/assets/sbadmin2/js/sb-admin-2.min.js",
-            "node_modules/jquery/dist/jquery.min.js",
-            "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
-           ]
+           "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
+              "src/assets/sbadmin2/js/sb-admin-2.min.js",
+              "node_modules/datatables.net/js/dataTables.min.js",
+              "node_modules/pdfmake/build/pdfmake.min.js",
+              "node_modules/pdfmake/build/vfs_fonts.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -100,6 +100,7 @@
               }
             ],
             "styles": [
+              "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ],
             "scripts": []

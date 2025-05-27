@@ -79,34 +79,62 @@ export class FichaCerealComponent {
     // Inicializar el modal después de que la vista se haya inicializado
 
   }
- 
+
 
   descargaComprobante(item) {
     // Armo el nombre del archivo
 
 
-      const url = this.descargaService.getURLDescargaComprobante(item, "CER");
 
-      const cuenta = this.globalService.getUsuarioLogueado().cuenta.id;
-      const [dia, mes, anio] = item.fecha.split('/');
-      const nc = item.numeroComprobante.toString();
+        const url = this.descargaService.getURLDescargaComprobante(item, "CER");
 
-      const puntoVenta = nc.slice(0, 2); // Extrae los primeros 2 dígitos como punto de venta
-      const restoNumero = nc.slice(2); // Extrae el resto del número
-      const puntoVentaFormateado = puntoVenta.padStart(3, '0'); // Asegura que el punto de venta tenga 4 dígitos
-      const numeroComprobante = puntoVentaFormateado + "-" + restoNumero;
-      const fileName = `${anio + mes + dia + "-" + numeroComprobante + "-" + cuenta}.pdf`;
+        const cuenta = this.globalService.getUsuarioLogueado().cuenta.id;
+        const [dia, mes, anio] = item.fecha.split('/');
+        const nc = item.numeroComprobante.toString();
 
-      // Crea un enlace
-      const a = document.createElement('a');
-      a.href = url
-      a.download = fileName; // Nombre del archivo
-      a.target = '_blank'; // Abre el enlace en una nueva pestaña
-      document.body.appendChild(a); // Añade el enlace al DOM
-      a.click(); // Hace clic en el enlace
-      document.body.removeChild(a); // Elimina el enlace del DOM
+        const puntoVenta = nc.slice(0, 2); // Extrae los primeros 2 dígitos como punto de venta
+        const restoNumero = nc.slice(2); // Extrae el resto del número
+        const puntoVentaFormateado = puntoVenta.padStart(3, '0'); // Asegura que el punto de venta tenga 4 dígitos
+        const numeroComprobante = puntoVentaFormateado + "-" + restoNumero;
+        const fileName = `${anio + mes + dia + "-" + numeroComprobante + "-" + cuenta}.pdf`;
+
+        // Crea un enlace
+        const a = document.createElement('a');
+        a.href = url
+        a.download = fileName; // Nombre del archivo
+        a.target = '_blank'; // Abre el enlace en una nueva pestaña
+        document.body.appendChild(a); // Añade el enlace al DOM
+        a.click(); // Hace clic en el enlace
+        document.body.removeChild(a); // Elimina el enlace del DOM
+
+
+
+
 
   }
+  permisoTipoComprobante2(item: any) {
+    return item.pdfExiste; // Mostrar ícono solo si el PDF existe
+  }
+
+  verificarExistenciaPDF(item: any) {
+
+    if (item.tipoComprobante == 70 || item.tipoComprobante == 71){
+    const url = this.descargaService.getURLDescargaComprobante(item, "CER");
+
+     this.descargaService.verificarArchivo(url).subscribe(
+      () => {
+        item.pdfExiste = true; // Si existe
+      },
+      () => {
+        item.pdfExiste = false; // Si no existe
+      }
+    );
+  }else{
+    item.pdfExiste = false;
+    }
+  }
+
+
 
   async cargarResumen(): Promise<any> {
     this.loading = true;
@@ -117,7 +145,14 @@ export class FichaCerealComponent {
       try {
         this.cerealesService.getFichaDeCereales(this.usuarioLogueado.cuenta.id, this.paramsRecibidos.cerealId , this.paramsRecibidos.claseId ,this.paramsRecibidos.cosecha).subscribe((response: any) => {
 
-          this.fichaCereal = response.datos.movimiento;
+
+          this.fichaCereal = response.datos.movimiento.map((item: any) => ({
+            ...item,
+            pdfExiste: false, // Agregar pdfExiste como false por defecto
+          }));
+          this.fichaCereal.forEach(item => {100
+            //this.verificarExistenciaPDF(item);
+          });
           this.cantMovFichaCereal = response.datos.cantidadRegistros
           this.permisoFicharemitos = this.globalService.getPermisoFichaRemitos()
           // rom pendientes
@@ -176,15 +211,14 @@ export class FichaCerealComponent {
 
           this.usuarioCuenta = [
             {
-              id : this.usuarioLogueado.cuenta.id,
-              nombre: this.usuarioLogueado.cuenta.nombre,
-              email: this.usuarioLogueado.cuenta.email,
-              tipoUsuario: this.usuarioLogueado.cuenta.tipoUsuario,
-              saldoPesos : this.usuarioLogueado.cuenta.saldoPesos,
-              saldoDolar: this.usuarioLogueado.cuenta.saldoDolar,
-              fecha: this.usuarioLogueado.cuenta.fecha,
-              claveMarcaCambio : this.usuarioLogueado.cuenta.claveMarcaCambio,
-              ultActualizacion: this.usuarioLogueado.cuenta.ultActualizacion
+              id : this.usuarioLogueado["id"],
+              nombre:this.usuarioLogueado["nombre_apellido"],
+              email: this.usuarioLogueado["email"],
+              tipoUsuario :this.usuarioLogueado["grupos"]["grupo"]["id_grupo"],
+              tipoUsuarioNombre : this.usuarioLogueado["grupos"]["grupo"]["descripcion"],
+              fecha:  new Date(),
+              claveMarcaCambio : this.usuarioLogueado["marca_cambio"],
+              ultActualizacion : "",
 
             }
           ];
@@ -251,8 +285,10 @@ export class FichaCerealComponent {
 
   descargarReporteCereales = () => {
 
+    alert("Descargar Reporte Ficha de Cereales")
 
     this.reportesService.validarServicioReportePdf().subscribe(response => {
+        debugger
         const url = Configuraciones.dominioBaseDescargaPdf+`/ficha-cereal-${this.globalService.getUsuarioLogueado().cuenta.id}.pdf`
         this.reportesService.descargarFichaCerealPdf(this.paramsRecibidos.cerealId, this.paramsRecibidos.claseId, this.paramsRecibidos.cosecha).subscribe((resp: any) => {});
 

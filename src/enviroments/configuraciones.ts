@@ -6,21 +6,26 @@ import { TextosApp } from "./textos-app";
 
 export class Configuraciones{
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    public static appNombre = "Gestagro"
+    public static appNombre = "Conciliaciones"
 
-    public static dominioBaseApp = "https://dev.kernelinformatica.com.ar"
-    public static urlBase : string = `${Configuraciones.dominioBaseApp}/api.gestagro/ws`;
+    public static dominioBaseApp = "http://localhost:5050"
+    public static urlBase : string = `${Configuraciones.dominioBaseApp}/api`;
+    // Web service que calcula las conciliaciones
+    public static dominioBaseConcilia = "http://localhost:6050"
+    public static urlBaseConcilia : string = `${Configuraciones.dominioBaseConcilia}/api`;
+
+    /////
 
     // Dev: ojo que mi payara local apunta a produccion //
-    //public static dominioBaseApp = "http://localhost:8080"
+    //public static dominioBaseApp = "http://localhost:8080";
     //public static urlBase : string = `${Configuraciones.dominioBaseApp}/gestagroex-rest/ws`;
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static dominioBaseDescargaPdf = `${Configuraciones.dominioBaseApp}/archivos/pdf`
     public static dominioBaseReportes = `${Configuraciones.dominioBaseApp}/reportes`
     public static reporteCtactePdf: string = `${Configuraciones.dominioBaseReportes}/generarReportePdf`;
-    public static dummyUrl : string = `${Configuraciones.urlBase}/dummy`;
-    public static authUrl : string = `${Configuraciones.urlBase}/usuarios/`;
+    public static dummyUrl : string = `${Configuraciones.urlBase}/auth/dummy`;
+    public static authUrl : string = `${Configuraciones.urlBase}/auth/login`;
     public static miCuentaUrl : string = `${Configuraciones.urlBase}/usuarios/`;
     public static detalleCerUrl : string = `${Configuraciones.urlBase}/detallecer/`;
     public static detalleCtaCteUrl : string = `${Configuraciones.urlBase}/detallecc/`;
@@ -39,6 +44,7 @@ export class Configuraciones{
     public static mercadosUrl: string = `${Configuraciones.urlBase}/mercados/`;
     public static cerealesResumenUrl : string = `${Configuraciones.urlBase}/cereal-resumen/`;
     public static ordenesVentaUrl: string = `${Configuraciones.urlBase}/ordenes/`;
+    public static conciliacionesUrl: string = `${Configuraciones.urlBaseConcilia}/conciliar_datos`;
 
   public static rutaLogos : string = "assets/images/";
   public static linkPaginaKernel = "https://www.kernelinformatica.com.ar";
@@ -48,7 +54,7 @@ export class Configuraciones{
   public static intervaloDeAutoActualizacion =  20000 // 20 segundos;
   public static intervaloDeAutoActualizacionNotificaciones =  300000 // 5 minutos;
   public static fechaTopeDescargaCompDeCereales = "2024-12-31"
-  
+
 
     // 10 segundos: 10000
     // 30 segundos: 30000

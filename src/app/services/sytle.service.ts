@@ -26,16 +26,18 @@ export class StyleService {
 
 
   getStyleTemplate(elemento: string, propiedad: string): string {
+  
     const template = this.globalService.getTemplateActivo();
     
     // Verificar si el template existe y no es null
-    if (!template || !template[0] || !template[0].estilos) {
+    /*if (!template || !template[0] || !template[0].estilos) {
         console.error('Template no encontrado o inválido');
+        alert("NO se encontro un template válido.")
         return '';
-    }
+    }*/
 
-    for (let i = 0; i < template[0].estilos.length; i++) {
-        const estilo = template[0].estilos[i];
+    for (let i = 0; i < template.estilos.length; i++) {
+        const estilo = template.estilos[i];
         if (estilo.elemento === elemento && estilo.propiedad === propiedad) {
             return estilo.valor;
         }

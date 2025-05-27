@@ -3,21 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <title>
-      :: Gestagro :: Consulta Web para Asociados de Cooperativas Agrícolas.
+      :: Conciliación Bancaria :: Kernel Informática.
     </title>
- 
-<base href="/extranet-asociados/" />
 
+<base href="/" />
+<!-- ng build --configuration production -->
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="favicon-ga.ico" />
-  </head>
+      <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
 
-  <body>
+  <body translate="no" class="mat-typography">
     <!-- Botón para colapsar el sidebar -->
 
   <app-root></app-root>
-
+  <!-- <ion-virtual-scroll [items]="items" [headerFn]="myHeaderFn">
+    <ion-item-divider *virtualHeader="let header">
+      {{ header }}
+    </ion-item-divider>
+    <ion-item *virtualItem="let item">
+      Item: {{ item }}
+    </ion-item>
+  </ion-virtual-scroll>
+-->
 
   </body>
 </html>

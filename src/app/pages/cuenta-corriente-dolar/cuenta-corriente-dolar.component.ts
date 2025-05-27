@@ -50,7 +50,7 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
   [x: string]: any;
   public usuarioLogueado!: Usuario;
   public empresa: Empresa[] = [];
-  
+
   public usuarioConectado: Usuario[] = [];
   public usuarioCuenta: Cuenta[] = [];
   public usuarioFunciones: Funciones[] = [];
@@ -71,8 +71,12 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
   fechaInfoActualizacion: string | '' | undefined;
   fechaSaldoActualizacion: string | '' | undefined;
   loading = true;
-  totalNetoIvaPend : number = 0
-  totalIvaPend : number = 0
+  totalNetoIvaPend:number = 0;
+  totalIvaPend:number = 0;
+  totalIvaPendDiferido:number = 0;
+  totalIvaPendVencido:number = 0;
+  totalNetoPendDiferido:number = 0;
+  totalNetoPendVencido:number = 0;
   bgColorSideBar = '';
   msgSobreDisponiblidadPDFCtacte = TextosApp.mensajeSobreDisponiblidadPDFCtacte
   msgFechaActualizacion = TextosApp.mensajeFechaActualizacion
@@ -97,10 +101,20 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
 
 
   calcularTotalesIvaPend(): void {
+    const fechaHoy = new Date();
     this.totalNetoIvaPend = this.detalleIvaPend.reduce((acc, item) => acc + item.neto, 0);
     this.totalIvaPend = this.detalleIvaPend.reduce((acc, item) => acc + item.iva, 0);
+    this.detalleIvaPend.forEach(item => {
+      const fechaItem = new Date(item.vence); // Convertimos la fecha del item a tipo Date
+      if (fechaItem > fechaHoy) { // Diferido
+        this.totalNetoPendDiferido += item.neto;
+        this.totalIvaPendDiferido += item.iva;
+      } else { // Vencido
+        this.totalNetoPendVencido += item.neto;
+        this.totalIvaPendVencido += item.iva;
+      }
+    });
   }
-
 
   async cargarResumen(): Promise<any> {
     this.loading = true;
@@ -112,7 +126,16 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
       this.ctacteService.getCuentaCorrienteDolar(this.usuarioLogueado.cuenta.id)
         .subscribe((response: any) => {
 
-          this.detalleCtaCte = response.datos.movimiento;
+          this.detalleCtaCte = response.datos.movimiento.map((item: any) => ({
+            ...item,
+            pdfExiste: false, // Agregar pdfExiste como false por defecto
+          }));
+          this.detalleCtaCte.forEach(item => {100
+            //this.verificarExistenciaPDF(item);
+          });
+
+
+
           this.cantidadMovimientos = response.datos.movimiento.length;
 
           const datetempSaldo = new Date(this.usuarioCuenta[0].ultActualizacion);
@@ -146,7 +169,6 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
 
       this.ctacteService.getCuentaCorrienteDolarIvaPendiente(this.usuarioLogueado.cuenta.id)
         .subscribe((response: any) => {
-          debugger
           this.detalleIvaPend = response.datos.movimiento;
           this.cantidadMovimientosIvaPend = response.datos.movimiento.length;
 
@@ -163,6 +185,11 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
     }
 
   }
+
+
+
+
+
 
 
 
@@ -205,7 +232,7 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
 
   descargaComprobante(item) {
     // Armo el nombre del archivo
-
+      if (this.permisoDescargaCompDolar){
 
       const url = this.descargaService.getURLDescargaComprobante(item, "D");
 
@@ -226,6 +253,10 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
       document.body.appendChild(a); // Añade el enlace al DOM
       a.click(); // Hace clic en el enlace
       document.body.removeChild(a); // Elimina el enlace del DOM
+    }else{
+      alert("No tiene permiso para descargar comprobantes")
+    }
+
 
   }
 
@@ -248,24 +279,24 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
         if (this.usuarioLogueado) {
 
           this.permisoDescargaCompDolar = this.globalService.getPermisoDescargaComprobantesDolar();
+
           this.permisoIvaPendienteDolar = this.globalService.getPermisoIvaPendiente();
-        
+
           this.usuarioCuenta = [
             {
 
-              id: this.usuarioLogueado.cuenta.id,
-              nombre: this.usuarioLogueado.cuenta.nombre,
-              email: this.usuarioLogueado.cuenta.email,
-              tipoUsuario: this.usuarioLogueado.cuenta.tipoUsuario,
-              saldoPesos: this.usuarioLogueado.cuenta.saldoPesos,
-              saldoDolar: this.usuarioLogueado.cuenta.saldoDolar,
-              fecha: this.usuarioLogueado.cuenta.fecha,
-              claveMarcaCambio: this.usuarioLogueado.cuenta.claveMarcaCambio,
-              ultActualizacion : this.usuarioLogueado.cuenta.ultActualizacion
+              id : this.usuarioLogueado["id"],
+              nombre:this.usuarioLogueado["nombre_apellido"],
+              email: this.usuarioLogueado["email"],
+              tipoUsuario :this.usuarioLogueado["grupos"]["grupo"]["id_grupo"],
+              tipoUsuarioNombre : this.usuarioLogueado["grupos"]["grupo"]["descripcion"],
+              fecha:  new Date(),
+              claveMarcaCambio : this.usuarioLogueado["marca_cambio"],
+              ultActualizacion : "",
             },
           ];
           this.empresa = this.globalService.getEmpresa()
-         
+
 
           this.fechaHoy = new Date();
           // Convertir la fecha en formato string a un objeto Date
@@ -299,6 +330,44 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
   descargarCsvCtaCte = (data) => {
     this.exportService.exportToCsv('data.csv', data);
   };
+
+
+
+
+
+  permisoTipoComprobante2(item: any) {
+    return item.pdfExiste; // Mostrar ícono solo si el PDF existe
+  }
+
+  verificarExistenciaPDF(item: any) {
+    /*SE VALIDA POR FECHAS VALIDAS PORQUE NO TIENE TIPO DE COMPROBANTE LA TABLA CUANDO SE GRABE ELTIPO DE COMPROBANTE CORRECTO CAMBIAR
+      Y AGREGAR LA VALIDACION DE TIPO DE COMPROBANTES PERMITIDOS , VER CTACTE PESOS (IDEM)
+    */
+    if(this.permisoDescargaCompDolar){
+      if (item.ingreso != "." || item.ingreso != "." ){
+
+
+        const url = this.descargaService.getURLDescargaComprobante(item, "D");
+        this.descargaService.verificarArchivo(url).subscribe(
+        () => {
+
+          item.pdfExiste = true; // Si existe
+        },
+        () => {
+          item.pdfExiste = false; // Si no existe
+        }
+      );
+    }else{
+    item.pdfExiste = false;
+    }
+  }else{
+    return false;
+  }
+  return false;
+
+  }
+
+
 
   descargarReporteCtaCte = () => {
     this.reportesService.validarServicioReportePdf().subscribe((response) => {
@@ -339,7 +408,7 @@ export class CuentaCorrienteDolarComponent implements OnInit, AfterViewInit {
   getStyleTemplate(elemento:string, propiedad:string) {
 
     return this.styleService.getStyleTemplate(elemento, propiedad);
-  
+
   }
 
   enableDismissTrigger(): void {

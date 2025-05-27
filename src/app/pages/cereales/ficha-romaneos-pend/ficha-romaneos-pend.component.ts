@@ -46,7 +46,7 @@ export class FichaRomaneosPendComponent {
   paramsRecibidos : any;
   loading = true;
   bgColorSideBar = "";
- 
+
 
   public cantMovFichaRoma: number = 0;
 
@@ -135,15 +135,14 @@ export class FichaRomaneosPendComponent {
 
             this.usuarioCuenta = [
               {
-                id : this.usuarioLogueado.cuenta.id,
-                nombre: this.usuarioLogueado.cuenta.nombre,
-                email: this.usuarioLogueado.cuenta.email,
-                tipoUsuario: this.usuarioLogueado.cuenta.tipoUsuario,
-                saldoPesos : this.usuarioLogueado.cuenta.saldoPesos,
-                saldoDolar: this.usuarioLogueado.cuenta.saldoDolar,
-                fecha: this.usuarioLogueado.cuenta.fecha,
-                claveMarcaCambio : this.usuarioLogueado.cuenta.claveMarcaCambio,
-                ultActualizacion: this.usuarioLogueado.cuenta.ultActualizacion
+                id : this.usuarioLogueado["id"],
+                nombre:this.usuarioLogueado["nombre_apellido"],
+                email: this.usuarioLogueado["email"],
+                tipoUsuario :this.usuarioLogueado["grupos"]["grupo"]["id_grupo"],
+                tipoUsuarioNombre : this.usuarioLogueado["grupos"]["grupo"]["descripcion"],
+                fecha:  new Date(),
+                claveMarcaCambio : this.usuarioLogueado["marca_cambio"],
+                ultActualizacion : "",
 
               }
             ];

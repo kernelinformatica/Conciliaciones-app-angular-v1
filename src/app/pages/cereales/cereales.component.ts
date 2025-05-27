@@ -87,8 +87,9 @@ export class CerealesComponent  implements OnInit, AfterViewInit {
          let empresa = this.globalService.getEmpresa()
          if (empresa.id == 11){
           // solo si es coopar ( porque en coopar el combustible viene dentro del la ficha de cereales, para los demós no, entonces lo que hago es sacar el ultimo elemento del array)
-          const resumenCerealFiltrado = response.datos.resumenCereal.slice(0, -1)
+          const resumenCerealFiltrado = response.datos.resumenCereal.filter(cereal => cereal.cerealId !== "0" &&  cereal.cerealId !== "99" && cereal.cerealId !== "98").reverse();
           this.resumenCereal =resumenCerealFiltrado.reverse()
+
         }else{
           this.resumenCereal = response.datos.resumenCereal.reverse()
          }
@@ -142,16 +143,14 @@ export class CerealesComponent  implements OnInit, AfterViewInit {
 
         this.usuarioCuenta = [
           {
-            id : this.usuarioLogueado.cuenta.id,
-            nombre: this.usuarioLogueado.cuenta.nombre,
-            email: this.usuarioLogueado.cuenta.email,
-            tipoUsuario: this.usuarioLogueado.cuenta.tipoUsuario,
-            saldoPesos : this.usuarioLogueado.cuenta.saldoPesos,
-            saldoDolar: this.usuarioLogueado.cuenta.saldoDolar,
-            fecha: this.usuarioLogueado.cuenta.fecha,
-            claveMarcaCambio : this.usuarioLogueado.cuenta.claveMarcaCambio,
-            ultActualizacion: this.usuarioLogueado.cuenta.ultActualizacion
-
+            id : this.usuarioLogueado["id"],
+            nombre:this.usuarioLogueado["nombre_apellido"],
+            email: this.usuarioLogueado["email"],
+            tipoUsuario :this.usuarioLogueado["grupos"]["grupo"]["id_grupo"],
+            tipoUsuarioNombre : this.usuarioLogueado["grupos"]["grupo"]["descripcion"],
+            fecha:  new Date(),
+            claveMarcaCambio : this.usuarioLogueado["marca_cambio"],
+            ultActualizacion : "",
           }
         ];
 

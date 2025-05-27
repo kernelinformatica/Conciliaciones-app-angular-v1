@@ -1,49 +1,45 @@
-<div class="login-container" [style.backgroundImage]="imagenFondo"   >
+<div class="login-container" [style.backgroundImage]="imagenFondo"    >
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-xl-10 col-lg-12 col-md-9">
+      <div class="col-xl-5 col-lg-5 col-md-12">
         <div class="card o-hidden border-0 shadow-lg my-5">
           <div class="card-body p-0">
             <div class="row">
-              <div class="col-lg-6 d-none d-lg-block bg-login-image">
-                <img [src]="'assets/multimedia/images/login/' + imagenPortada" alt="Imagen de Portada">
 
-              </div>
-              <div class="col-lg-6">
+              <div class="col-lg-12">
                 <div class="p-5">
                   <div class="text-center">
                     <img
-                      src="assets/multimedia/images/login/gestagro-login.png"
+                      src="assets/multimedia/images/login/login.png"
                       alt="Logo"
                     />
                     <!-- Agrega esta línea -->
-                    <h1 class="h4 text-gray-900 mb-4">GESTAGRO</h1>
+                    <h1 class="h4 text-gray-900 mb-4">CONCILIACION BANCARIA</h1>
 
 
                   </div>
 
 
-                  <div *ngIf="gestagroMensaje != ''" class="error-message">
-                    {{this.gestagroMensaje}}
+                  <div *ngIf="apiMensaje != ''" class="error-message">
+                    {{this.apiMensaje}}
                   </div>
-                  <div *ngIf="gestagroMensaje  != ''" class="error-message">
-                     Si el problema persiste póngase en contácto con su Cooperativa asociada.
+                  <div *ngIf="apiMensaje  != ''" class="error-message">
+                     Si el problema persiste póngase en contácto con el administrador del sistema.
                   </div>
-                  <div *ngIf="gestagroStatus == true"  >
+                  <div *ngIf="apiStatus == true"  >
 
                   <form [formGroup]="loginForm" class="user"  (ngSubmit)="onSubmit()">
                     <div class="form-group">
                       <input
                         formControlName="usuario"
                         type="text"
-                        maxlength="7"  
-                        pattern="^[0-9]{1,7}$"
+                        maxlength="20"
                         class="form-control form-control-user text-centered"
-                        placeholder="Ingrese el Usuario"
+                        placeholder="Ingrese el Usuario o el correo registrado"
                         required
                       />
-                    </div>  
-                    
+                    </div>
+
                     <div class="form-group">
                       <input
                         formControlName="clave"
@@ -56,7 +52,7 @@
                     </div>
                     <div *ngIf="loginForm.get('usuario').invalid && loginForm.get('usuario').touched" class="text-danger">
                       <small *ngIf="loginForm.get('usuario').errors?.['required']">* Este campo 'Usuario' es obligatorio</small>
-                      <small *ngIf="loginForm.get('usuario').errors?.['pattern']">* Solo se permiten números en el 'Usuario' (máximo 7, incluyendo ceros iniciales)</small>
+                      <small *ngIf="loginForm.get('usuario').errors?.['pattern']">* Ingrese su nombre de usuario o correo electrónico registrado</small>
                     </div>
                     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
                     <button [ngStyle]="{'color': colorTextoBotones, 'background-color': bgColorBotones}"
@@ -64,16 +60,17 @@
                       Ingreso
                     </button>
                     <p></p>
-                 
+
                   </form>
                   <app-spiner *ngIf="loading"></app-spiner>
-                  <hr />
+
                   <div class="text-center">
                     <a class="small" [ngStyle]="{'color': colorTextos}" (click) = "irAPedirRecuperacion()">¿Olvidó su clave?</a>
                   </div>
-                 <!-- <div class="text-center">
-                    <a class="small" href="#">Solicite su clave de acceso.</a>
-                  </div>-->
+
+                  <div class="text-center">
+                    <a href="#" (click)="irAKernelInformatica()"><img src="assets/multimedia/images/login/footer-kernel-login.png" alt="Imagen centrada" class="image-centered"></a>
+                  </div>
 
                 </div>
               </div>

@@ -43,11 +43,10 @@ constructor(
 }
   ngOnInit(): void {
     const usuarioLogueado = this.globalService.getUsuarioLogueado()
-    this.cambioClave = usuarioLogueado.cuenta.claveMarcaCambio
-    this.empresa = usuarioLogueado.empresa
+    this.cambioClave = usuarioLogueado["marca_cambio"]
+    this.empresa = this.globalService.getEmpresa()
     const today = new Date();
     this.fechaHoy = this.utilsService.fechasFormatos(today, 3, 1);
-
     this.sidebarService.getSidebarState().subscribe((state: boolean) => {
       this.isCollapsed = state;
     });

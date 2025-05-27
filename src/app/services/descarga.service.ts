@@ -41,18 +41,21 @@ export class DescargaService {
     let dominio = empresa.dominio;
     let nombreArchivo = ""
 
-    if (tipo == "D"){
-     nombreArchivo =  this.getArmoNombreArchivoDolar(item)
-    }else{
-      nombreArchivo = this.getArmoNombreArchivo(item, tipo)
-    }
-    let url = "https://"+dominio+"/comprobantes_web/"+empresa.id+"/comprobantes/"+this.getAnoMesComprobante(item, tipo)+"/"+nombreArchivo;
+      if (tipo == "D"){
+      nombreArchivo =  this.getArmoNombreArchivoDolar(item)
+      }else{
+        nombreArchivo = this.getArmoNombreArchivo(item, tipo)
+      }
 
-    return url
+      let url = "https://"+dominio+"/comprobantes_web/"+empresa.id+"/comprobantes/"+this.getAnoMesComprobante(item, tipo)+"/"+nombreArchivo;
+
+      return url
+
   }
 
 
   private getAnoMesComprobante(item: any, origen: string = "CC") {
+    debugger
     const formatoAnio = 'yyyy';
     const formatoMes = 'MM';
     let anio: number;
@@ -73,8 +76,15 @@ export class DescargaService {
     anio = parseInt(formatDate(fecha, formatoAnio, 'en-US'));
     mes = parseInt(formatDate(fecha, formatoMes, 'en-US'));
     */
-    const [day, month, year] = fe.split('/');
-    const fecha = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+
+    const separarFecha = (fe: string): Date => {
+      const separador = fe.includes("/") ? "/" : "-";
+      const [day, month, year] = fe.split(separador);
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    };
+
+    const fecha = separarFecha(fe);
     anio = parseInt(formatDate(fecha, formatoAnio, 'en-US'));
     mes = parseInt(formatDate(fecha, formatoMes, 'en-US'));
    // Crear una fecha con el año, mes (ya ajustado) y día correctos
@@ -88,6 +98,10 @@ export class DescargaService {
     return resp;
   }
 
+
+  verificarArchivo(url: string) {
+    return this.http.head(url); // Envía una solicitud HEAD al servidor
+  }
 
 
   private getArmoNombreArchivo(cbte: any, origen: string = "CC") {
@@ -359,7 +373,7 @@ export class DescargaService {
      const [dia, mes, anio] = cbte.ingreso.split('/');
      nroComprobante = this.completarNumero(nroComprobanteOriginal, 12);
      url = `${anio+mes+dia}-${tipoComp}-${nroComprobante}-${cuentaSinCoope}.PDF`;
-     debugger
+
    } else {
      nroComprobante = this.completarNumero(nroComprobanteOriginal, 12);
      const parte1 = nroComprobante.slice(0, 4);
@@ -437,7 +451,7 @@ export class DescargaService {
            ambos casos esta como FAC tanto para A Y PARA B.
            Codigo: String abrv = compTipo.getAbreviatura();
            */
-          debugger
+
           if(compTipo == 1 || compTipo == 6 || compTipo == 11){
             return "FA";
           }else if(compTipo == 2 || compTipo == 7 || compTipo == 12 || compTipo == 13){

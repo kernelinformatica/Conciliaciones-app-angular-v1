@@ -42,8 +42,8 @@ export class RecuperarClaveConfirmaComponent {
   private renderer: Renderer2;
   empresaModelo!: Empresa;
   logoEmpresa : string = "gestagro.png";
-  gestagroStatus = false;
-  gestagroMensaje = ""
+  apiStatus = false;
+  apiMensaje = ""
 
 
   // Logout Modal //
@@ -110,7 +110,7 @@ export class RecuperarClaveConfirmaComponent {
         hashIdPass = params['hashIdPass']
       }
       this.hashIdPass = hashIdPass
-   
+
       if (hash == "0" || hash == "" ){
         this.globalService.removeHashEmpresa()
       }
@@ -193,9 +193,9 @@ export class RecuperarClaveConfirmaComponent {
 
           if (response && Object.keys(response).length > 0) {
             this.loading = false;
-            this.gestagroStatus = true
-            this.gestagroMensaje = ''
-            this.globalService.setStatusGestagro(this.gestagroStatus)
+            this.apiStatus = true
+            this.apiMensaje = ''
+            this.globalService.setStatusServicioRest(this.apiStatus)
 
 
 
@@ -244,17 +244,17 @@ export class RecuperarClaveConfirmaComponent {
           } else {
             this.loading = false;
             // Maneja el caso cuando el objeto está vacío
-            this.gestagroMensaje = 'Gestagro no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
-            this.gestagroStatus = false
+            this.apiMensaje = 'El Servicio no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
+            this.apiStatus = false
 
           }
        },
        error => {
-        this.gestagroStatus = false
-        this.globalService.setStatusGestagro(this.gestagroStatus)
-        this.gestagroMensaje =  'Gestagro no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
+        this.apiStatus = false
+        this.globalService.setStatusServicioRest(this.apiStatus)
+        this.apiMensaje =  'El Servicio no está disponible temporalmente, intente nuevamente más tarde. Sepa disculpar las molestias ocasionadas.'
         // Maneja el error en la solicitud HTTP
-        console.error(this.gestagroMensaje);
+        console.error(this.apiMensaje);
       });
 
     }
@@ -314,7 +314,7 @@ export class RecuperarClaveConfirmaComponent {
   }
 
   confirmarClave(){
-    
+
 
   this.loading = true;
 
@@ -322,7 +322,7 @@ export class RecuperarClaveConfirmaComponent {
     }, 2000);
     try {
       this.usuarioService.cambiarConfirmarNuevaClave(this.cuenta, this.claveForm.value.clave, this.hashIdPass).subscribe((response: any) => {
-        
+
           if(response.control.codigo == "OK"){
             this.loading = false;
             this.mostrarRespuesta(this.template,"La clave ha sido cambiada con éxito, ingrese session con su nueva clave");

@@ -1,45 +1,36 @@
-
-import { DetalleCtaCte } from '../../models/detallectacte';
-import { Resumen } from './../../models/resumen';
-import { Component, ElementRef, Inject, OnInit, PLATFORM_ID, RendererFactory2, ViewChild } from '@angular/core';
-import { GlobalService } from '../../services/global.service';
-import { ExportService } from '../../services/export.service';
-import { StyleService } from '../../services/sytle.service';
-import { CuentaCorrienteService } from '../../services/cuenta-corriente.service';
-import { Usuario } from '../../models/usuario';
-import { Empresa } from '../../models/empresa';
-import { Cuenta } from '../../models/cuenta';
-import { Configuraciones } from '../../../enviroments/configuraciones';
-import { Funciones } from '../../models/funciones';
+import { AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, RendererFactory2, ViewChild } from '@angular/core';
+import { Configuraciones } from '../../../../enviroments/configuraciones';
+import { Usuario } from '../../../models/usuario';
+import { Empresa } from '../../../models/empresa';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TopbarComponent } from "../../components/topbar/topbar.component";
-import { SidebarComponent } from "../../components/sidebar/sidebar.component";
-import { TextosApp } from '../../../enviroments/textos-app';
-import { CommonModule, DatePipe } from '@angular/common';
-import { HttpClient, HttpHeaders, provideHttpClient, withFetch } from '@angular/common/http';
-import { AfterViewInit } from '@angular/core';
-import { SpinerComponent } from '../../components/spiner/spiner.component';
-import { environment } from '../../../enviroments/enviroment.prod';
-import { ReportesService } from '../../services/reportes.service';
-import { catchError, map, Observable, of, throwError } from 'rxjs';
-import { Modal } from 'bootstrap';
-import { UiService } from '../../services/ui.service';
-import { DescargaService } from '../../services/descarga.service';
-
+import { TextosApp } from '../../../../enviroments/textos-app';
+import { Cuenta } from '../../../models/cuenta';
+import { Funciones } from '../../../models/funciones';
+import { CuentaCorrienteService } from '../../../services/cuenta-corriente.service';
+import { DescargaService } from '../../../services/descarga.service';
+import { ExportService } from '../../../services/export.service';
+import { GlobalService } from '../../../services/global.service';
+import { ReportesService } from '../../../services/reportes.service';
+import { StyleService } from '../../../services/sytle.service';
+import { UiService } from '../../../services/ui.service';
+import { CommonModule } from '@angular/common';
+import { SidebarComponent } from '../../../components/sidebar/sidebar.component';
+import { SpinerComponent } from '../../../components/spiner/spiner.component';
+import { TopbarComponent } from '../../../components/topbar/topbar.component';
+import {SubirArchivosService} from '../../../services/subir-archivos.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
-  selector: 'app-cuenta-corriente',
+  selector: 'app-concilia-importa',
   imports: [CommonModule, TopbarComponent, SidebarComponent, SpinerComponent],
-  templateUrl: './cuenta-corriente.component.html',
-  styleUrl: './cuenta-corriente.component.css',
-  standalone: true
+  templateUrl: './concilia-importa.component.html',
+  styleUrl: './concilia-importa.component.css'
 })
-export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
-
+export class ConciliaImportaComponent implements OnInit, AfterViewInit {
 
   public usuarioLogueado!: Usuario;
   public empresa: Empresa[] = []
   public usuarioConectado: Usuario[] = [];
-  public usuarioCuenta: Cuenta[] = [];
+  public usuarioCuenta: any;
   public usuarioFunciones: Funciones[] =[]
   public AppNombre = Configuraciones.appNombre;
   public detalleCtaCte: any;  // Usado para almacenar respuesta del servicio
@@ -53,27 +44,78 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
   tieneCtacteDolar:string | "N" | undefined;
   fechaInfoActualizacion:string | "" | undefined;
   fechaSaldoActualizacion: string | "" | undefined;
+  modalRespuestaConcilia :string | "" | undefined;
   loading = true;
   bgColorSideBar = "";
   msgSobreDisponiblidadPDFCtacte = TextosApp.mensajeSobreDisponiblidadPDFCtacte
   msgFechaActualizacion = TextosApp.mensajeFechaActualizacion
-  resumen: any[] = [];
+  fileBanco?: File;
+  fileContable?: File;
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     rendererFactory: RendererFactory2,
     private globalService: GlobalService,
-    private ctacteService: CuentaCorrienteService,
     private styleService: StyleService,
-    private reportesService: ReportesService,
     private exportService: ExportService,
     private utilsService: UiService,
-    private descargaService: DescargaService,
+    private subirarchivosService:SubirArchivosService,
+    private modalService: NgbModal,
     @Inject(PLATFORM_ID) private platformId: Object
 
   ) {
 
   }
+
+  abrirModal(modal: any) {
+    this.modalService.open(modal, { centered: true });
+  }
+  cerrarModal() {
+    (window as any).$(`#respuestaModal`).modal('hide');  // Cierra el modal
+  }
+
+
+
+  onFileSelected(event: any, type: string) {
+    const file = event.target.files[0];
+    if (type === 'banco') {
+      this.fileBanco = file;
+    } else if (type === 'contable') {
+      this.fileContable = file;
+    }
+  }
+
+  uploadFiles(event: Event) {
+    this.loading = true;
+    event.preventDefault(); // Evita que la página se recargue
+    this.modalRespuestaConcilia= ""
+    if (this.fileBanco && this.fileContable) {
+      this.subirarchivosService.subirArchivos(this.fileBanco, this.fileContable).subscribe({
+        next: (response) => {
+          this.loading = false;
+          this.modalRespuestaConcilia = response.mensaje
+          this.abrirModal(this.modalRespuestaConcilia)
+          console.log('Archivos subidos correctamente:', response);
+        },
+        error: (error) => {
+          this.loading = false;
+          this.modalRespuestaConcilia = error.mensaje
+          this.abrirModal(this.modalRespuestaConcilia)
+          console.error('Error al subir los archivos:', error);
+
+        }
+      });
+    } else {
+      this.loading = false;
+      this.modalRespuestaConcilia = 'Debes seleccionar ambos archivos antes de subir.'
+      this.abrirModal(this.modalRespuestaConcilia)
+      console.warn('Debes seleccionar ambos archivos antes de subir.');
+    }
+  }
+
+
   ngAfterViewInit() {
     // Inicializar el modal después de que la vista se haya inicializado
 
@@ -83,37 +125,15 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
     return this.styleService.getStyleTemplate(elemento, propiedad);
 
   }
-   async cargarResumen(): Promise<any> {
+   async cargarConfig(): Promise<any> {
     this.loading = true;
+
       setTimeout(() => {
         //this.loading = false;
         //this.errorMessage = ""
       }, 5000);
       try {
-        this.ctacteService.getCuentaCorrientePesos(this.usuarioLogueado.cuenta.id).subscribe((response: any) => {
-
-
-          this.detalleCtaCte = response.datos.movimiento.map((item: any) => ({
-            ...item,
-            pdfExiste: false, // Agregar pdfExiste como false por defecto
-          }));
-          this.detalleCtaCte.forEach(item => {
-            this.verificarExistenciaPDF(item);
-          });
-          this.cantidadMovimientos = response.datos.movimiento.length
-          const datetempSaldo = new Date(this.usuarioCuenta[0].ultActualizacion);
-          const dateTemp = new Date(this.detalleCtaCte[0].control)
-          this.fechaInfoActualizacion = this.utilsService.fechasFormatos(datetempSaldo, 0,1)
-          this.fechaSaldoActualizacion = this.utilsService.fechasFormatos(datetempSaldo, 3, 1)
-
-          this.loading = false;
-
-        });
-
-
-
-        // Handle successful login (e.g., navigate to another page)
-      } catch (error: any) {
+         } catch (error: any) {
 
         this.loading = false;
 
@@ -125,31 +145,10 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
 
 
   }
-  permisoTipoComprobante2(item: any) {
-    return item.pdfExiste; // Mostrar ícono solo si el PDF existe
-  }
 
-  verificarExistenciaPDF(item: any) {
 
-    if (this.globalService.getPermisoTipoComprobantesPermitidos(item)){
-      const url = this.descargaService.getURLDescargaComprobante(item, "P");
-     this.descargaService.verificarArchivo(url).subscribe(
-      () => {
-        item.pdfExiste = true; // Si existe
-      },
-      () => {
-        item.pdfExiste = false; // Si no existe
-      }
-    );
-  }else{
-    item.pdfExiste = false;
-    }
 
-  }
 
-  permisoTipoComprobante(item){
-    return this.globalService.getPermisoTipoComprobantesPermitidos(item);
-  }
 
 
 
@@ -159,7 +158,7 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
     // Armo el nombre del archivo
 
 
-      const url = this.descargaService.getURLDescargaComprobante(item, "P");
+      /*const url = this.descargaService.getURLDescargaComprobante(item, "P");
 
       const cuenta = this.globalService.getUsuarioLogueado().cuenta.id;
       const [dia, mes, anio] = item.ingreso.split('/');
@@ -177,20 +176,21 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
       a.target = '_blank'; // Abre el enlace en una nueva pestaña
       document.body.appendChild(a); // Añade el enlace al DOM
       a.click(); // Hace clic en el enlace
-      document.body.removeChild(a); // Elimina el enlace del DOM
+      document.body.removeChild(a); // Elimina el enlace del DOM*/
 
   }
 
 
 
   ngOnInit(): void {
-    if (this.globalService.getPermisoCtaCte()) {
 
+    this.loading = true
     this.bgColorSideBar = this.styleService.getStyleTemplate('navbar-nav', 'background-color')
     if (typeof document !== 'undefined') {
       // Código que usa el objeto document
       this.enableDismissTrigger();
     }
+    this.modalRespuestaConcilia = ""
     if (this.globalService.getUsuarioLogueado() === null) {
       this.usuarioCuenta = []
       this.globalService.logout();
@@ -199,7 +199,6 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
       this.usuarioLogueado = this.globalService.getUsuarioLogueado()
       if (this.usuarioLogueado) {
 
-        this.permisoDescargaComp = this.globalService.getPermisoDescargaComprobantes();
         this.usuarioCuenta = [
           {
             id : this.usuarioLogueado["id"],
@@ -211,6 +210,8 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
             claveMarcaCambio : this.usuarioLogueado["marca_cambio"],
             ultActualizacion : "",
 
+
+
           }
         ];
 
@@ -219,21 +220,20 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
         //
         const fechaComparar = new Date(this.usuarioCuenta[0].fecha+ 'T00:00:00');
         this.fechasIguales = this.fechaHoy.toDateString() === fechaComparar.toDateString();
-        this.cargarResumen()
+
       } else {
         this.globalService.logout();
          this.router.navigate(['/login']);
         // Handle the null case, e.g., redirect to login
       }
+      this.loading = false;
     }
 
 
-
-  }else{
-    this.logout()
-    }
 
   }
+
+
 
 
 
@@ -245,7 +245,9 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
   }
 
 
-
+  irAlhome(){
+    this.router.navigate(['conciliacion']);
+  }
 
   descargarXlsCtaCte =(data) => {
     this.exportService.exportToExcel('data.xls', data);
@@ -259,7 +261,7 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
   descargarReporteCtaCte = () => {
 
 
-    this.reportesService.validarServicioReportePdf().subscribe(response => {
+    /*this.reportesService.validarServicioReportePdf().subscribe(response => {
         const url = Configuraciones.dominioBaseDescargaPdf+`/resumen-ctacte-${this.globalService.getUsuarioLogueado().cuenta.id}.pdf`
         this.reportesService.descargarCtaCtePdf().subscribe((resp: any) => {});
 
@@ -291,7 +293,7 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
 
 
 
-    }
+    }*/
 
   }
 
@@ -300,5 +302,4 @@ export class CuentaCorrienteComponent implements OnInit, AfterViewInit {
   enableDismissTrigger(): void {
     // Implementación de enableDismissTrigger
   }
-
 }

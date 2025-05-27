@@ -49,7 +49,7 @@ export class NotificacionesComponent implements OnInit  {
   ngOnInit() {
 
     const usuarioLogueado = this.globalService.getUsuarioLogueado()
-    this.cambioClave = usuarioLogueado.cuenta.claveMarcaCambio
+    this.cambioClave = usuarioLogueado["marca_cambio"]
     this.bgHeadersColor = this.styleService.getStyleTemplate('navbar-nav', 'background-color')
     this.notificacionesService.notificaciones$.subscribe(not => {
       this.notificaciones = not;
