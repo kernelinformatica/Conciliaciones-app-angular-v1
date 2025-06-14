@@ -1,5 +1,5 @@
 #dataTableConcilia {
-  font-size: 11px; /* Ajusta el tamaño de la fuente según tus necesidades */
+  font-size: 12px; /* Ajusta el tamaño de la fuente según tus necesidades */
   color: black;
 }
 
@@ -51,12 +51,7 @@
 
 
 
-.btn-functions {
-  background-color: transparent;
-  border: none;
 
-
-}
 
 #subirArchivos {
   font-size: 11px; /* Ajusta el tamaño de la fuente según tus necesidades */
@@ -64,7 +59,12 @@
 }
 
 
+.btn-functions {
+  background-color: transparent;
+  border: none;
 
+
+}
 
 .btn {
   background-color: transparent;
@@ -107,4 +107,24 @@ input[type="file"] {
   font-size: 12px; /* Ajusta el tamaño del texto */
   cursor: pointer; /* Mantiene el cursor de selección */
   appearance: none; /* Desactiva el estilo por defecto del navegador */
+}
+
+
+/* Ajustar el tamaño del dropdown */
+select.form-control {
+  font-size: 12px; /* Igual que la tabla */
+  padding: 4px; /* Reduce el espacio interno */
+  height: auto; /* Ajusta la altura dinámica */
+  width: 100%; /* Asegura que encaje dentro de la celda */
+  border-radius: 4px; /* Redondea los bordes */
+}
+
+/* Ajustar la celda de la cuenta contable */
+#dataTableConcilia td {
+  vertical-align: middle; /* Alinea el contenido verticalmente */
+}
+
+/* Asegurar que el texto dentro del dropdown no sea demasiado grande */
+select.form-control option {
+  font-size: 12px;
 }

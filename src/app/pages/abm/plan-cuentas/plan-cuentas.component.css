@@ -1,9 +1,9 @@
-#dataTableConcilia {
+#dataTablePlanCuentas{
   font-size: 11px; /* Ajusta el tamaño de la fuente según tus necesidades */
   color: black;
 }
 
-#dataTableConcilia th, #dataTableConcilia td {
+#dataTablePlanCuentas th, #dataTablePlanCuenta td {
   padding: 8px; /* Ajusta el padding según tus necesidades */
 }
 
@@ -66,12 +66,7 @@
 
 
 
-.btn {
-  background-color: transparent;
-  border: none;
-  font-size: 12px;
 
-}
 .text-danger {
   color: red;
   font-size: 9px;
@@ -100,6 +95,12 @@ table {
 }
 
 
+select.form-control option {
+  font-size: 12px;
+}
+
+
+
 input[type="file"] {
   border: none; /* Elimina el borde */
   background: none; /* Hace el fondo transparente */
@@ -107,4 +108,25 @@ input[type="file"] {
   font-size: 12px; /* Ajusta el tamaño del texto */
   cursor: pointer; /* Mantiene el cursor de selección */
   appearance: none; /* Desactiva el estilo por defecto del navegador */
+}
+
+
+/* Ajustar el tamaño del dropdown */
+select.form-control {
+  font-size: 12px; /* Igual que la tabla */
+  padding: 4px; /* Reduce el espacio interno */
+  height: auto; /* Ajusta la altura dinámica */
+  width: 100%; /* Asegura que encaje dentro de la celda */
+  border-radius: 4px; /* Redondea los bordes */
+}
+
+.btn {
+  /*background-color: transparent;*/
+  border: none;
+  font-size: 12px;
+
+}
+.btn-sm-custom {
+  padding: 2px 6px;
+  font-size: 12px;
 }

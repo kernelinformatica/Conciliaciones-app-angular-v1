@@ -1,3 +1,4 @@
+import { PlanCuentasCrearComponent } from './pages/abm/plan-cuentas-crear/plan-cuentas-crear.component';
 import { NgModule } from '@angular/core'
 import { Routes, RouterModule } from '@angular/router';
 import { LoginComponent } from './pages/login/login.component';
@@ -16,6 +17,10 @@ import { RecuperarClaveConfirmaComponent } from './pages/usuarios/recuperar-clav
 import { TesterComponent } from './pages/tester/tester.component';
 import { ConciliaImportaComponent } from './pages/conciliacion/concilia-importa/concilia-importa.component';
 import { ConciliaInformeComponent } from './pages/conciliacion/concilia-informe/concilia-informe.component';
+import { ConciliaTotalesConceptosComponent} from './pages/conciliacion/concilia-totales-conceptos/concilia-totales-conceptos.component';
+import { ConciliaDifEmpresaEntidadComponent } from './pages/conciliacion/concilia-dif-empresa-entidad/concilia-dif-empresa-entidad.component';
+import { ConciliaDifEntidadEmpresaComponent } from './pages/conciliacion/concilia-dif-entidad-empresa/concilia-dif-entidad-empresa.component';
+import { PlanCuentasComponent } from './pages/abm/plan-cuentas/plan-cuentas.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -26,6 +31,9 @@ export const routes: Routes = [
   { path: 'recuperar-clave-confirma', component: RecuperarClaveConfirmaComponent },
   { path: 'conciliacion', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'conciliacion-importar-datos', component: ConciliaImportaComponent, canActivate: [AuthGuard] },
+  { path: 'conciliacion-totales-conceptos', component: ConciliaTotalesConceptosComponent, canActivate: [AuthGuard] },
+  { path: 'concilia-dif-cliente-entidad', component: ConciliaDifEmpresaEntidadComponent, canActivate: [AuthGuard] },
+  { path: 'concilia-dif-entidad-cliente', component: ConciliaDifEntidadEmpresaComponent, canActivate: [AuthGuard] },
   { path: 'cuenta-corriente', component: CuentaCorrienteComponent, canActivate: [AuthGuard]},
   { path: 'cuenta-corriente-dolar', component: CuentaCorrienteDolarComponent, canActivate: [AuthGuard]},
   { path: 'resumen-de-cereales', component: CerealesComponent, canActivate: [AuthGuard]},
@@ -34,6 +42,8 @@ export const routes: Routes = [
   { path: 'mi-cuenta', component: MicuentaComponent, canActivate: [AuthGuard]},
   { path: 'conciliacion-informe', component: ConciliaInformeComponent, canActivate: [AuthGuard]},
   { path: 'cambio-clave-de-acceso', component: CambiarClaveComponent, canActivate: [AuthGuard]},
+  { path: 'plan-cuentas', component: PlanCuentasComponent, canActivate: [AuthGuard]},
+  { path: 'plan-cuentas-crear', component: PlanCuentasCrearComponent, canActivate: [AuthGuard]},
 
   { path: '**', redirectTo: '/login', pathMatch: 'full' },
 

@@ -1,3 +1,5 @@
+import { Control } from './../../../models/control';
+import { ConciliacionesService } from './../../../services/conciliaciones-service.service';
 import { AfterViewInit, Component, ElementRef, Inject, OnInit, PLATFORM_ID, RendererFactory2, ViewChild } from '@angular/core';
 import { Configuraciones } from '../../../../enviroments/configuraciones';
 import { Usuario } from '../../../models/usuario';
@@ -19,9 +21,13 @@ import { SpinerComponent } from '../../../components/spiner/spiner.component';
 import { TopbarComponent } from '../../../components/topbar/topbar.component';
 import {SubirArchivosService} from '../../../services/subir-archivos.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from '../../../components/dialog-component/dialog-component.component';
+
 @Component({
   selector: 'app-concilia-importa',
-  imports: [CommonModule, TopbarComponent, SidebarComponent, SpinerComponent],
+  imports: [CommonModule, TopbarComponent, SidebarComponent, SpinerComponent, FormsModule, MatDialogModule],
   templateUrl: './concilia-importa.component.html',
   styleUrl: './concilia-importa.component.css'
 })
@@ -32,6 +38,7 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
   public usuarioConectado: Usuario[] = [];
   public usuarioCuenta: any;
   public usuarioFunciones: Funciones[] =[]
+
   public AppNombre = Configuraciones.appNombre;
   public detalleCtaCte: any;  // Usado para almacenar respuesta del servicio
   public cantidadMovimientos: number = 0;
@@ -40,18 +47,22 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
   permisos: string[] = []
   public fechaHoy :Date;
   fechasIguales: boolean;
+  cuentasContables:any;
+  cantidadCuentasContables: number = 0;
   permisoDescargaComp:string | "N" | undefined;
   tieneCtacteDolar:string | "N" | undefined;
   fechaInfoActualizacion:string | "" | undefined;
   fechaSaldoActualizacion: string | "" | undefined;
-  modalRespuestaConcilia :string | "" | undefined;
+  respuestaConcilia : Control = new Control({ codigo: '0', estado: '', mensaje: '' });
+  respuestaConciliaMensaje: string = "";
   loading = true;
   bgColorSideBar = "";
+  mostrarFormulario:boolean = true;;
   msgSobreDisponiblidadPDFCtacte = TextosApp.mensajeSobreDisponiblidadPDFCtacte
   msgFechaActualizacion = TextosApp.mensajeFechaActualizacion
   fileBanco?: File;
   fileContable?: File;
-
+  selectedCuenta: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -63,6 +74,8 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
     private utilsService: UiService,
     private subirarchivosService:SubirArchivosService,
     private modalService: NgbModal,
+    private conciliaService: ConciliacionesService,
+    private dialog: MatDialog,
     @Inject(PLATFORM_ID) private platformId: Object
 
   ) {
@@ -90,27 +103,27 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
   uploadFiles(event: Event) {
     this.loading = true;
     event.preventDefault(); // Evita que la página se recargue
-    this.modalRespuestaConcilia= ""
+    //this.modalRespuestaConcilia= ""
     if (this.fileBanco && this.fileContable) {
-      this.subirarchivosService.subirArchivos(this.fileBanco, this.fileContable).subscribe({
+      this.subirarchivosService.subirArchivos(this.fileBanco, this.fileContable, this.selectedCuenta).subscribe({
         next: (response) => {
           this.loading = false;
-          this.modalRespuestaConcilia = response.mensaje
-          this.abrirModal(this.modalRespuestaConcilia)
+          this.respuestaConcilia = response
+          this.mostrarFormulario = false
           console.log('Archivos subidos correctamente:', response);
         },
         error: (error) => {
           this.loading = false;
-          this.modalRespuestaConcilia = error.mensaje
-          this.abrirModal(this.modalRespuestaConcilia)
+          this.respuestaConciliaMensaje = error.mensaje
+          this.mostrarFormulario = true
+
           console.error('Error al subir los archivos:', error);
 
         }
       });
     } else {
       this.loading = false;
-      this.modalRespuestaConcilia = 'Debes seleccionar ambos archivos antes de subir.'
-      this.abrirModal(this.modalRespuestaConcilia)
+      this.respuestaConciliaMensaje = 'Debes seleccionar ambos archivos antes de subir.'
       console.warn('Debes seleccionar ambos archivos antes de subir.');
     }
   }
@@ -126,14 +139,45 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
 
   }
    async cargarConfig(): Promise<any> {
+
     this.loading = true;
 
-      setTimeout(() => {
+    this.conciliaService.getCuentasContables(1).subscribe({
+      next: (response: any) => {
+        if (response?.control?.codigo === '200') {
+          this.cuentasContables = response.datos;
+          this.cuentasContables = response.datos.map((item: any) => ({
+            ...item
+
+
+          }));
+          this.cantidadCuentasContables = this.cuentasContables.length;
+
+          console.log('Cuentas contables empresas:', this.cuentasContables);
+        } else {
+          console.error(
+            'Error en respuesta del servidor:',
+            response.control.mensaje
+          );
+          alert(`Error: ${response.control.mensaje}`);
+        }
+        this.loading = false
+      },
+      error: (error) => {
+        console.error('Error al obtener cuentas contables:', error);
+        alert('Ocurrió un error al obtener las cuentas contables.');
+      },
+    });
+    setTimeout(() => {
         //this.loading = false;
         //this.errorMessage = ""
+
+
+
       }, 5000);
       try {
          } catch (error: any) {
+
 
         this.loading = false;
 
@@ -151,7 +195,13 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
 
 
 
+  openDialog() {
 
+    this.dialog.open(DialogComponent, {
+        width: '400px',
+        data: { mensaje: 'Este es un mensaje de alerta' }
+    })
+}
 
 
   descargaComprobante(item) {
@@ -190,7 +240,8 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
       // Código que usa el objeto document
       this.enableDismissTrigger();
     }
-    this.modalRespuestaConcilia = ""
+    this.respuestaConciliaMensaje = ""
+
     if (this.globalService.getUsuarioLogueado() === null) {
       this.usuarioCuenta = []
       this.globalService.logout();
@@ -222,14 +273,14 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
         this.fechasIguales = this.fechaHoy.toDateString() === fechaComparar.toDateString();
 
       } else {
-        this.globalService.logout();
-         this.router.navigate(['/login']);
+
+        this.logout(); // Call the logout method to handle the null case
         // Handle the null case, e.g., redirect to login
       }
       this.loading = false;
     }
 
-
+    this.cargarConfig();
 
   }
 
@@ -239,12 +290,16 @@ export class ConciliaImportaComponent implements OnInit, AfterViewInit {
 
 
   logout(){
+
+    this.globalService.logout();
     this.router.navigate(['/logout']);
 
 
   }
 
-
+  irAinformeConciliacion(){
+    this.router.navigate(['conciliacion-informe']);
+  }
   irAlhome(){
     this.router.navigate(['conciliacion']);
   }

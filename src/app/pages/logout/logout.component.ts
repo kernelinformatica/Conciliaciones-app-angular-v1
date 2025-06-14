@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { GlobalService } from '../../services/global.service';
 import { Usuario } from '../../models/usuario';
+import { Configuraciones } from '../../../enviroments/configuraciones';
 
 @Component({
   selector: 'app-logout',
@@ -14,7 +15,7 @@ export class LogoutComponent {
     let usuarioLogueado = globalService.getUsuarioLogueado();
     this.authService.logout();
     if (usuarioLogueado) {
-      window.location.href = "http://localhost:4200"
+      window.location.href = Configuraciones.dominio
     }else{
       this.router.navigate(['/login']);
     }

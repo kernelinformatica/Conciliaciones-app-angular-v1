@@ -322,6 +322,9 @@ getPermisoTipoComprobantesPermitidos(item):any{
   logout(): void {
     localStorage.removeItem('usuarioLogueado');
     localStorage.removeItem('hashEmpresa');
+    localStorage.removeItem('token');
+    localStorage.removeItem('permisos');
+
     localStorage.clear()
     this.usuarioLogueado = null;
     this.empresa = null;

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Conciliaciones - Diferencia entre Empresa vs Entidad</title>
+
+
+
+</head>
+
+<body id="page-top" translate="no">
+<app-spiner *ngIf="loading"></app-spiner>
+
+    <!-- Page Wrapper -->
+    <div id="wrapper" class="notranslate">
+
+        <!-- Sidebar-->
+        <app-sidebar [ngStyle]="{'background-color': bgColorSideBar}" class="side-bar"></app-sidebar>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <app-topbar [usuarioCuenta]="usuarioCuenta"></app-topbar>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                 <!-- Begin Page Content -->
+                 <div class="container-fluid">
+
+                  <!-- Tabla de Cuentas Contables -->
+                  <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold text-primary">Listado de Cuentas Contables</h6>
+                          <button class="btn btn-primary btn-sm float-end" data-bs-toggle="modal" (click)="irAlPlanCuentasCrear()" data-bs-target="#modalCuenta">
+                              Agregar Cuenta
+                          </button>
+                      </div>
+                      <div class="card-body">
+                          <div class="table-responsive">
+                            <div class="table-responsive" id="dataTablePlanCuentas">
+                              <table class="table table-striped table-bordered" id="resuCtaCteTabla" width="100%" cellspacing="0" *ngIf="cuentasContables.length > 0">
+                                <thead>
+                                    <tr>
+                                        <th class="text-end">ID</th>
+                                        <th>TIPO</th>
+                                        <th>NOMBRE</th>
+                                        <th class="text-end">CUENTA</th>
+                                        <th class="text-end"></th>
+                                        <th class="text-end"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of cuentasContables; let i = index;">
+                                        <td class="text-end">{{ item.id }}</td>
+                                        <td>{{ item.tipo_cuenta_nombre }}</td>
+                                        <td>{{ item.descripcion }}</td>
+                                        <td class="text-end">{{ item.plan_cuentas }}</td>
+                                        <td class="text-end">
+                                          <button class="btn btn-warning btn-sm btn-sm-custom" (click)="editarCuentaContable(item)">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        </td>
+                                        <td class="text-end">
+                                          <button class="btn btn-danger btn-sm btn-sm-custom" (click)="borrarCuentaContable(item.id)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th class="text-end">ID</th>
+                                        <th>TIPO</th>
+                                        <th>NOMBRE</th>
+                                        <th class="text-end">CUENTA</th>
+                                        <th class="text-end"></th>
+                                        <th class="text-end"></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                          </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </div>
+              <!-- /.container-fluid -->
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div  class="copyright text-center my-auto">
+                      <div [innerHTML]="copyRigth"></div>
+
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+</body>
+
+</html>
+
+

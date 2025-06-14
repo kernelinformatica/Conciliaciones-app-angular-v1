@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Conciliaciones - Totales por Conceptos</title>
+
+
+
+</head>
+
+<body id="page-top" translate="no">
+  <app-spiner *ngIf="loading == true"></app-spiner>
+
+    <!-- Page Wrapper -->
+    <div id="wrapper" class="notranslate">
+
+        <!-- Sidebar-->
+        <app-sidebar [ngStyle]="{'background-color': bgColorSideBar}" class="side-bar"></app-sidebar>
+        <!-- End of Sidebar -->
+
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <app-topbar [usuarioCuenta]="usuarioCuenta"></app-topbar>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                  <nav aria-label="breadcrumb" class="custom-breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a (click)="irAlhome()">Inicio</a></li>
+                         <li class="breadcrumb-item active" aria-current="page">Totales por Conceptos</li>
+                    </ol>
+                  </nav>
+
+                    <!-- Datos del usuario -->
+                    <!--  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                      <h1 class="h3 mb-0 text-gray-800">{{usuarioCuenta[0].nombre}}</h1>
+                     </div>
+                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <small class="text-gray-500">Email: {{usuarioCuenta[0].email}}</small>
+                  </div>-->
+
+
+
+
+
+                    <!-- Content Row -->
+
+
+
+                        <!--
+
+
+                        inicio de grilla
+
+
+
+                        -->
+
+
+
+
+
+                         <!-- DataTale para seleccionar -->
+
+                      <div  class="card shadow mb-4" *ngIf="this.cantidadMovimientos > 0" >
+
+
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}" >TOTALES POR CONCEPTOS</h6>
+
+                            <div *ngIf="cantidadMovimientos > 0"><small>{{ "Cantidad de movimientos encontrados "  }}</small>  <span class="badge badge-success">{{cantidadMovimientos }}</span>
+                              <div><small>Codigo: {{cuentaConcilia }}</small></div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                          <div class="table-responsive" id="dataTableConcilia" >
+                            <table class="table table-striped table-bordered" id="resuCtaCteTabla" width="100%" cellspacing="0">
+                              <thead>
+                                <tr>
+
+                                  <th>Concepto</th>
+                                  <th class="text-end">Conciliacion</th>
+                                  <th class="text-end">Cuenta</th>
+                                  <th class="text-end">Importe</th>
+                                  <th>Seleccionar</th>
+
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                <tr *ngFor="let item of movimientos; let i = index;">
+
+                                  <td>{{ item.concepto }}</td>
+                                    <td class="text-end">{{ item.asiento_concilia }}</td>
+                                  <td class="text-end">{{ item.plan_cuenta_concilia }}</td>
+
+                                  <td class="text-end">{{ item.importe | number:'1.2-2' }}</td>
+                                  <td>
+                                    <select [(ngModel)]="item.plan_cuentas" class="form-control">
+
+                                      <option *ngFor="let cuenta of cuentasContables" [value]="cuenta.plan_cuentas">
+                                        {{ cuenta.plan_cuentas }} - {{ cuenta.descripcion }}
+                                      </option>
+                                    </select>
+                                  </td>
+                                </tr>
+                              </tbody>
+                              <tfoot>
+                                <tr>
+
+
+                                  <th>Concepto</th>
+                                  <th class="text-end">Conciliacion</th>
+                                  <th class="text-end">Cuenta</th>
+                                  <th class="text-end">Importe</th>
+                                  <th>Seleccionar</th>
+
+                                </tr>
+
+
+                              </tfoot>
+                            </table>
+                          </div>
+
+                          <div class="text-end mt-3">
+
+
+                            <button (click)="agregarItemAsientoTalesConceptos()"
+                            [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
+                             class="btn btn-success mx-2">+</button>
+
+
+                          </div>
+                          </div>
+
+
+                       </div>
+
+
+
+
+
+                        <!--
+
+
+
+                        Data Table de asiento con los items seleccionados
+
+                        -->
+
+
+                        <div  class="card shadow mb-4" *ngIf="this.cantidadMovimientos > 0 && totalesBancosFinal.length > 0" >
+
+
+                          <div class="card-header py-3">
+                              <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}" >ASIENTO CONTABLE</h6>
+
+                              <div *ngIf="cantidadMovimientos > 0 && totalesBancosFinal.length > 0"><small>{{ "movimientos para contabilizar "  }}</small>  <span class="badge badge-success">{{totalesBancosFinal.length }}</span>
+                                <div><small>Contra cuenta: {{cuentaConcilia }}: {{ totalCuentaConcilia}}</small></div>
+                              </div>
+                          </div>
+                          <div class="card-body">
+
+                            <div class="table-responsive" id="dataTableConcilia" >
+                              <table class="table table-striped table-bordered" id="resuCtaCteTabla" width="100%" cellspacing="0">
+                                <thead>
+                                  <tr>
+
+                                    <th>Concepto</th>
+                                    <th class="text-end">Cuenta Concilia</th>
+                                    <th class="text-end">Cuenta</th>
+                                    <th class="text-end">Importe</th>
+
+
+                                  </tr>
+                                </thead>
+
+                                <tbody>
+                                  <tr *ngFor="let item of totalesBancosFinal; let i = index;">
+
+                                    <td>{{ item.concepto }}</td>
+                                    <td class="text-end">{{ item.plan_cuenta_concilia }}</td>
+                                    <td class="text-end">{{ item.plan_cuentas }}</td>
+
+                                    <td class="text-end">{{ item.importe | number:'1.2-2' }}</td>
+
+                                  </tr>
+                                </tbody>
+                                <tfoot>
+                                  <tr>
+                                    <th>Concepto</th>
+                                    <th class="text-end">Cuenta Concilia</th>
+                                    <th class="text-end">Cuenta</th>
+
+                                    <th class="text-end">
+                                      Total: {{ getTotalImporteAsiento() | number:'1.2-2' }}
+                                    </th>
+
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+
+                            <div class="text-end mt-3">
+                              <button  (click)="cancelarAsientoConciliacion()"
+                              [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
+                               class="btn btn-success mx-2">Cancelar</button>
+                               <button (click)="generarCsv()"
+                              [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
+                               class="btn btn-success mx-2">Descargar CSV</button>
+                              <button (click)="agregarItemAsientoTalesConceptos()"
+                              [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
+                               class="btn btn-success mx-2">Confirmar Asiento Contable</button>
+
+
+                            </div>
+                            </div>
+
+
+                         </div>
+
+
+
+
+                    <!-- Content Row -->
+
+                    <div class="row">
+
+
+
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Content Column -->
+
+
+
+                    </div>
+
+
+
+
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div  class="copyright text-center my-auto">
+                      <div [innerHTML]="copyRigth"></div>
+
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+
+</body>
+
+</html>

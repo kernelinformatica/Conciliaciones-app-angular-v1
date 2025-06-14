@@ -51,12 +51,6 @@
 
 
 
-.btn-functions {
-  background-color: transparent;
-  border: none;
-
-
-}
 
 #subirArchivos {
   font-size: 11px; /* Ajusta el tamaño de la fuente según tus necesidades */
@@ -66,12 +60,6 @@
 
 
 
-.btn {
-  background-color: transparent;
-  border: none;
-
-
-}
 
 /* styles.css */
 .success-snackbar {
@@ -87,6 +75,22 @@
 }
 
 
+
+table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.mat-header-cell, .mat-cell {
+  padding: 12px;
+}
+
+select.form-control option {
+  font-size: 11px;
+}
+select.form-control {
+  font-size: 11px; /* Ajusta el tamaño según lo necesites */
+}
 input[type="file"] {
   border: none; /* Elimina el borde */
   background: none; /* Hace el fondo transparente */
@@ -95,3 +99,14 @@ input[type="file"] {
   cursor: pointer; /* Mantiene el cursor de selección */
   appearance: none; /* Desactiva el estilo por defecto del navegador */
 }
+
+.modal-content {
+  background-color: #fff !important;
+  border-radius: 8px !important;
+  padding: 20px;
+}
+.modal-header {
+  background-color: #007bff !important;
+  color: white !important;
+}
+

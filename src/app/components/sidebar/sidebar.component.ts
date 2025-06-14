@@ -83,7 +83,7 @@ getStyleTemplate(elemento:string, propiedad:string) {
     }
   }
   irAModulo(item){
-    alert(item.nombreForm)
+
     this.router.navigate([item.nombreForm]);
   }
 

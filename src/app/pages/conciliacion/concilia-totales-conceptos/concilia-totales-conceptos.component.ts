@@ -24,7 +24,7 @@ import { TopbarComponent } from '../../../components/topbar/topbar.component';
 import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
 @Component({
-  selector: 'app-concilia-informe',
+  selector: 'app-concilia-totales-bancos',
   imports: [
     CommonModule,
     TopbarComponent,
@@ -33,10 +33,11 @@ import { FormsModule } from '@angular/forms';
     MatTableModule,
     FormsModule,
   ],
-  templateUrl: './concilia-informe.component.html',
-  styleUrl: './concilia-informe.component.css',
+  templateUrl: './concilia-totales-conceptos.component.html',
+  styleUrl: './concilia-totales-conceptos.component.css'
 })
-export class ConciliaInformeComponent {
+export class ConciliaTotalesConceptosComponent {
+
   public usuarioLogueado!: Usuario;
   public empresa: Empresa[] = [];
   public usuarioConectado: Usuario[] = [];
@@ -55,16 +56,23 @@ export class ConciliaInformeComponent {
   fechaInfoActualizacion: string | '' | undefined;
   fechaSaldoActualizacion: string | '' | undefined;
   modalRespuestaConcilia: string | '' | undefined;
-
+  cuentaConcilia:string | '' | undefined;
   bgColorSideBar = '';
   msgSobreDisponiblidadPDFCtacte = TextosApp.mensajeSobreDisponiblidadPDFCtacte;
   msgFechaActualizacion = TextosApp.mensajeFechaActualizacion;
   fileBanco?: File;
   fileContable?: File;
-  loading : boolean = true;
+  loading = true;
   movimientos: any;
+  totalesBancosFinal: { concepto: string; plan_cuenta_concilia: string; importe: number; plan_cuentas: number }[] = [];
+
+  totalCuentaConcilia:number = 0;
+  cuentasContables:any;
+  cantidadCuentasContables: number = 0;
   todosSeleccionados: boolean = false;
   movimientosConciliados: any[] = [];
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -114,8 +122,11 @@ export class ConciliaInformeComponent {
   getItemsSeleccionados(): any[] {
     return this.movimientos.filter((item) => item.seleccionado);
   }
+  getTotalImporteAsiento(): number {
+    return this.totalesBancosFinal?.reduce((total, item) => total + (item.importe || 0), 0) || 0;
+  }
+
   async cargarInfo(): Promise<any> {
-    // Simular una llamada al servicio para obtener los movimientos
 
     setTimeout(() => {
 
@@ -123,7 +134,7 @@ export class ConciliaInformeComponent {
     }, 5000);
 
     try {
-     this.conciliaService.getConciliaciones().subscribe({
+      this.conciliaService.getTotales().subscribe({
         next: (response: any) => {
           if (response?.control?.codigo === '200') {
             const control = response.control;
@@ -132,29 +143,64 @@ export class ConciliaInformeComponent {
               seleccionado: false, // Agregar checkbox por defecto en false
             }));
             this.cantidadMovimientos = this.movimientos.length;
+            this.cuentaConcilia = this.movimientos[0]["plan_cuenta_concilia"] || '';
+
+
             console.log('Movimientos recibidos:', this.movimientos);
           } else {
             console.error(
               'Error en respuesta del servidor:',
               response.control.mensaje
             );
-
             alert(`Error: ${response.control.mensaje}`);
           }
           this.loading = false;
 
         },
         error: (error) => {
-          this.logout();
+          this.loading = false;
           console.error('Error en la petición:', error);
           alert('Ocurrió un error al obtener los movimientos de conciliación.');
         },
       });
     } catch (error: any) {
-      this.logout()
       console.error('Error inesperado:', error);
       alert('Ocurrió un error inesperado. Inténtalo de nuevo.');
     }
+
+
+    /*
+
+    traigo las cuentas contables cargadas para el cliente
+    */
+
+    this.conciliaService.getCuentasContables().subscribe({
+      next: (response: any) => {
+        if (response?.control?.codigo === '200') {
+          this.cuentasContables = response.datos;
+          this.cuentasContables = response.datos.map((item: any) => ({
+            ...item
+
+
+          }));
+          this.cantidadCuentasContables = this.cuentasContables.length;
+
+          console.log('Cuentas contables recibidas:', this.cuentasContables);
+        } else {
+          console.error(
+            'Error en respuesta del servidor:',
+            response.control.mensaje
+          );
+          alert(`Error: ${response.control.mensaje}`);
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener cuentas contables:', error);
+        alert('Ocurrió un error al obtener las cuentas contables.');
+      },
+    });
+
+
   }
 
   descargaComprobante(item) {
@@ -281,42 +327,102 @@ export class ConciliaInformeComponent {
   }
 
   CancelarConciliacion(): void {
-
+    alert("CANCELAR")
     this.todosSeleccionados = false;
     this.movimientosConciliados = [];
     this.movimientos.forEach((item) => (item.seleccionado = false));
   }
 
-  confirmarConciliacion(): void {
+  /*agregarItemAsientoTalesConceptos(): void {
+    this.totalesBancosFinal = this.movimientos
 
-    this.movimientosConciliados = this.movimientos
-      .filter((item) => item.seleccionado)
-      .map((item) => ({
-        ...item,
-        cuenta_contable: item.cuenta_contable || '0' // Ajusta según sea necesario
-      }));
+    .filter(item => item.plan_cuentas && item.plan_cuentas > 0)
+    .map(item => ({
+      concepto: item.concepto,
+      plan_cuenta_concilia: item.plan_cuenta_concilia,
+      importe: Number(item.importe), // Asegura que el valor sea numérico
+      plan_cuentas: item.plan_cuentas
+    }));
+    this.totalCuentaConcilia = this.getTotalImporteAsiento() *-1
+    debugger
 
-    console.log('Registros conciliados:', this.movimientosConciliados);
+}*/
+agregarItemAsientoTalesConceptos(): void {
+  // Calcular el total de los importes de los elementos filtrados
+  this.totalCuentaConcilia = this.movimientos
+    .filter(item => Number(item.plan_cuentas) > 0)
+    .reduce((total, item) => total + (Number(item.importe) || 0), 0) * -1;
+
+  const conceptoFijo = {
+    concepto: 'CONCILIAR CONTRA',
+    plan_cuenta_concilia: this.cuentaConcilia,
+    importe: this.totalCuentaConcilia, // Ahora tiene el valor correcto
+    plan_cuentas: 0
+  };
+
+  const nuevosElementos = this.movimientos
+    .filter(item => Number(item.plan_cuentas) > 0)
+    .map(item => ({
+      concepto: item.concepto || 'Sin concepto',
+      plan_cuenta_concilia: 0,
+      importe: Number(item.importe) || 0,
+      plan_cuentas: item.plan_cuentas || 0
+    }));
+
+  // Se conserva el elemento fijo y se agregan los nuevos sin reemplazo
+  this.totalesBancosFinal = [conceptoFijo, ...nuevosElementos];
+
+  console.debug('Total cuenta concilia:', this.totalCuentaConcilia);
 }
-  // TOTALIZADORES ///
 
-  getTotalSaldo(): number {
-    return this.movimientosConciliados.reduce(
-      (total, item) => total + Number(item.saldo),
-      0
-    );
-  }
 
-  getTotalImporte(): number {
-    return this.movimientosConciliados.reduce(
-      (total, item) => total + Number(item.importe),
-      0
-    );
-  }
+cancelarAsientoConciliacion(): void {
+  this.totalCuentaConcilia = 0;
+  this.totalesBancosFinal = [];
+  console.debug('Operación cancelada. Estado reseteado.');
+}
+
+
+generarCsv():void{
+  const totalesBancosFinal = this.movimientos
+    .filter(item => item.plan_cuentas && item.plan_cuentas > 0)
+    .map(item => ({
+      concepto: item.concepto,
+      plan_cuenta_concilia: item.plan_cuenta_concilia,
+      importe: item.importe,
+      plan_cuentas: item.plan_cuentas
+    }));
+
+   const csvContent = this.convertirAFormatoCSV(totalesBancosFinal);
+
+    // Crear un blob y descargar el archivo
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'totales_bancos.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+
+}
+
+convertirAFormatoCSV(datos: any[]): string {
+  if (!datos.length) return '';
+  // Obtener encabezados
+  const headers = Object.keys(datos[0]).join(',');
+  // Mapear los datos a formato CSV
+  const rows = datos.map(obj => Object.values(obj).join(','));
+  // Unir todo en un solo string con saltos de línea
+  return [headers, ...rows].join('\n');
+}
+
+
+
 
 confirmarConcilacionFinal(){
   const x = this.movimientosConciliados
-
+  debugger
   alert("ENVIO EL OBJECTO MOVIMIENTOS CONCILIADOS AL SERVICIO QUE GRABA LA CONCILIACION DEFINITIVAMENTE " + JSON.stringify(this.movimientosConciliados.length));
 
 }

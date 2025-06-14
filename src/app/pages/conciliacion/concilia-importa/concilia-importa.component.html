@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Conciliaciones Bancarias - Iportación de Datos</title>
+    <title>Conciliaciones - Iportación de Datos</title>
 
 
 
@@ -66,26 +66,47 @@
                                     <h4 [ngStyle]="{'color' : getStyleTemplate('title','color' )}">Importacion de Datos</h4>
                                 </div>
                                 <div class="card-body">
-                                  <div  class="file-upload">
+
+
+
+                                  <div class="alert alert-success" style="font-size: 11px;" role="alert" *ngIf="respuestaConcilia.codigo === 200">
+                                    <strong>Resultado:</strong> {{respuestaConcilia.mensaje}} <a (click)="irAinformeConciliacion()"  class="alert-link"><i class="fa fa-eye" aria-hidden="true"></i> Ver Informe</a>
+
+                                  </div>
+                                  <div class="alert alert-danger" style="font-size: 11px;" role="alert" *ngIf="respuestaConcilia.codigo === 400">
+                                    <strong>Aviso: </strong> {{respuestaConcilia.mensaje}}  <a  (click)="mostrarFormulario = true"  class="alert-link"><i class="fa fa-eye" aria-hidden="true"></i> Reintentar</a>
+
+                                  </div>
+                                  <div  class="file-upload" *ngIf="mostrarFormulario == true" >
                                     <form (submit)="uploadFiles($event)">
-                                      <div class="mb-3">
-                                        <label for="resu-banco" class="form-label">Resumen Bancario:</label>
-                                        <input type="file"  class="form-control" id="resu-banco" (change)="onFileSelected($event, 'banco')">
-                                        <!--  [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }"-->
+                                      <div class="alert alert-primary" style="font-size: 11px;" role="alert">
+                                        <strong>Importante:</strong> Tenga en cuenta que la cuenta a conciliar debe estar presente tanto en el resumen como en el Plan de Cuentas.
                                       </div>
 
-
-
-
-
-
                                       <div class="mb-3">
-                                        <label for="resu-contable" class="form-label">Resumen Contable:</label>
-                                        <input type="file"  class="form-control" id="resu-contable" (change)="onFileSelected($event, 'contable')">
+                                        <label for="cuenta-contable" class="form-label">Seleccione la cuenta a conciliar: </label>
+                                        <select class="form-control" [(ngModel)]="selectedCuenta" name="cuenta">
+                                          <option *ngFor="let cuenta of cuentasContables" [value]="cuenta.plan_cuentas">
+                                            {{ cuenta.plan_cuentas }} - {{ cuenta.descripcion }}
+                                          </option>
+                                        </select>
                                       </div>
 
-                                      <button  [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" type="submit" class="btn btn-success">Cargar</button>
+                                      <div class="mb-3">
+                                        <label for="resu-banco" class="form-label">Resumen a conciliar:</label>
+                                        <input type="file" class="form-control" id="resu-banco" (change)="onFileSelected($event, 'banco')" [disabled]="!selectedCuenta">
+                                      </div>
+
+                                      <div class="mb-3">
+                                        <label for="resu-contable" class="form-label">Su Resumen Contable:</label>
+                                        <input type="file" class="form-control" id="resu-contable" (change)="onFileSelected($event, 'contable')" [disabled]="!selectedCuenta">
+                                      </div>
+
+                                      <button type="submit" class="btn btn-success" [disabled]="!selectedCuenta" style="font-size: 12px;">
+                                        Cargar
+                                      </button>
                                     </form>
+
                                   </div>
                                 </div>
                             </div>
@@ -210,36 +231,8 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-    <div class="modal fade show" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Título del Modal</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body">
-            <p>Contenido del modal...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade"   id="respuestaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="mensaje">{{modalRespuestaConcilia}}</h5>
-                  <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">×</span>
-                  </button>
-              </div>
-              <div class="modal-body">{{modalRespuestaConcilia}}.</div>
-              <div class="modal-footer">
-                  <button [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }" class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                  <a [ngStyle]="{'color' : getStyleTemplate('btn','color' ),'background-color': getStyleTemplate('btn','background-color' ) }"  class="btn btn-primary" (click)="logout()">Aceptar</a>
-              </div>
-          </div>
-      </div>
-    </div>
+
+
 </body>
 
 </html>

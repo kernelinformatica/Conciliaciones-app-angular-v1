@@ -7,7 +7,14 @@ import { TextosApp } from "./textos-app";
 export class Configuraciones{
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     public static appNombre = "Conciliaciones"
-
+    public static appVersion = "1.0.0";
+    public static appDescripcion = "Aplicación para la conciliación de datos entre sistemas de gestión.";
+    public static appAutor = "Kernel Informática";
+    public static appCopyright = "Kernel Informática, Cooperativa de Trabajo Ltda.";
+    // desarrollo ///
+    public static dominio = "httpp://localhost:4200";
+    // produccion ///
+    // public static dominio = "httpp://wwww.xxxx.com.ar";
     public static dominioBaseApp = "http://localhost:5050"
     public static urlBase : string = `${Configuraciones.dominioBaseApp}/api`;
     // Web service que calcula las conciliaciones

@@ -16,7 +16,7 @@
 </head>
 
 <body id="page-top" translate="no">
-
+<app-spiner *ngIf="loading"></app-spiner>
 
     <!-- Page Wrapper -->
     <div id="wrapper" class="notranslate">
@@ -88,11 +88,17 @@
                             <table class="table table-striped table-bordered" id="resuCtaCteTabla" width="100%" cellspacing="0">
                               <thead>
                                 <tr>
-                                  <!--<th>ID</th>-->
+
                                   <th>Ingreso</th>
+                                  <th>Pase</th>
+                                  <th class="text-end">Conc</th>
                                   <th>Concepto</th>
+                                  <th>Detalle</th>
+                                  <th>Plan Cuenta</th>
+                                  <th>Asiento</th>
+                                  <th>Codigo</th>
                                   <th class="text-end">Comprobante</th>
-                                  <th class="text-end">Saldo</th>
+                                  <!--<th class="text-end">Saldo</th>-->
                                   <th class="text-end">Importe</th>
                                   <th class="text-center" >
                                     <input type="checkbox" [(ngModel)]="todosSeleccionados" (change)="toggleSeleccionTodos()">
@@ -104,12 +110,17 @@
 
                               <tbody>
                                 <tr *ngFor="let item of movimientos; let i = index;">
-                                 <!-- <td>{{ item.idMaster }}</td>-->
-                                  <td>{{ item.m_ingreso }}</td>
-                                  <td>{{ item.concepto }}</td>
-                                  <td class="text-end">{{ item.comprobante }}</td>
 
-                                  <td class="text-end">{{ item.saldo | number:'1.2-2' }}</td>
+                                  <td>{{ item.m_ingreso  | date:'yyyy-MM-dd' }}</td>
+                                  <td>{{ item.pase }}</td>
+                                  <td class="text-end">{{ item.asiento_concilia }}</td>
+                                  <td>{{ item.concepto }}</td>
+                                  <td>{{ item.detalle }}</td>
+                                  <td>{{ item.plan_cuenta}}</td>
+                                  <td>{{ item.asiento }}</td>
+                                  <td>{{ item.codigo }}</td>
+                                  <td class="text-end">{{ item.comprobante }}</td>
+                                  <!--<td class="text-end">{{ item.saldo | number:'1.2-2' }}</td>-->
                                   <td class="text-end">{{ item.importe | number:'1.2-2' }}</td>
                                   <td class="text-center">
                                     <input type="checkbox" [(ngModel)]="item.seleccionado">
@@ -119,11 +130,17 @@
                               <tfoot>
                                 <tr>
 
-                                 <!--  <th>-</th>-->
+
                                   <th>Ingreso</th>
+                                  <th>Pase</th>
+                                  <th class="text-end">Conc</th>
                                   <th>Concepto</th>
-                                  <th>Comprobante</th>
-                                  <th class="text-end">Saldo</th>
+                                  <th>Detalle</th>
+                                  <th>Plan Cuenta</th>
+                                  <th>Asiento</th>
+                                  <th>Codigo</th>
+                                  <th class="text-end">Comprobante</th>
+                                 <!-- <th class="text-end">Saldo</th>-->
                                   <th class="text-end">Importe</th>
                                   <th class="text-center">
                                     <input type="checkbox" [(ngModel)]="todosSeleccionados" (change)="toggleSeleccionTodos()">
@@ -139,11 +156,11 @@
                           <div class="text-end mt-3">
                             <button  (click)="CancelarConciliacion()"
                             [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
-                            type="submit" class="btn btn-success mx-2">Cancelar</button>
+                             class="btn btn-success mx-2">Cancelar</button>
 
                             <button (click)="confirmarConciliacion()"
                             [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
-                            type="submit" class="btn btn-success mx-2">Confirmar Conciliación</button>
+                             class="btn btn-success mx-2">Confirmar Conciliación</button>
 
 
                           </div>
@@ -180,36 +197,32 @@
                                           <tr>
                                               <!--<th>ID</th>-->
                                               <th>Ingreso</th>
+                                              <th>Pase</th>
                                               <th>Concepto</th>
+                                              <th>Detalle</th>
+                                              <th>Plan Cuenta</th>
+                                              <th>Asiento</th>
+                                              <th>Codigo</th>
                                               <th class="text-end">Comprobante</th>
-                                              <th class="text-end">Saldo</th>
+                                             <!-- <th class="text-end">Saldo</th>-->
                                               <th class="text-end">Importe</th>
-                                              <th class="text-end" style="width: 80px">Cta Cble</th> <!-- Nueva columna -->
+
                                           </tr>
                                       </thead>
                                       <tbody>
                                           <tr *ngFor="let item of movimientosConciliados; let i = index;">
                                               <!--<td>{{ item.idMaster }}</td>-->
                                               <td>{{ item.m_ingreso }}</td>
+                                              <td>{{ item.pase }}</td>
                                               <td>{{ item.concepto }}</td>
+                                              <td>{{ item.detalle }}</td>
+                                              <td>{{ item.plan_cuenta }}</td>
+                                              <td>{{ item.asiento }}</td>
+                                              <td>{{ item.codigo }}</td>
                                               <td class="text-end">{{ item.comprobante }}</td>
-                                              <td class="text-end">{{ item.saldo | number:'1.2-2' }}</td>
+                                              <!--<td class="text-end">{{ item.saldo | number:'1.2-2' }}</td>-->
                                               <td class="text-end">{{ item.importe | number:'1.2-2' }}</td>
-                                              <td class="text-end" style="width: 80px">
-                                                <input type="text" [(ngModel)]="item.cuenta_contable"
-                                                    placeholder="0000000000"
-                                                    class="form-control text-end"
-                                                    style="width: 80px; padding: 5px; border-radius: 5px; font-size: 12px;"
-                                                    pattern="\d{1,10}"
-                                                    maxlength="10"
-                                                    #cuentaContable="ngModel"
-                                                    (input)="validarCuentaContable(item)"
-                                                    required>
-                                              <span *ngIf="cuentaContable.invalid && cuentaContable.touched"  class="text-danger">
-                                                * Solo números.
-                                              </span>
 
-                                             </td>
                                           </tr>
                                       </tbody>
                                       <tfoot>
@@ -218,9 +231,14 @@
                                               <th></th>
                                               <th></th>
                                               <th></th>
-                                              <th class="text-end">{{ getTotalSaldo() | number:'1.2-2' }}</th>
+                                              <th></th>
+                                              <th></th>
+                                              <th></th>
+                                              <th></th>
+                                              <th></th>
+                                              <!--<th class="text-end">{{ getTotalSaldo() | number:'1.2-2' }}</th>-->
                                               <th class="text-end">{{ getTotalImporte() | number:'1.2-2' }}</th>
-                                              <th style="width: 80px"></th>
+
                                           </tr>
                                       </tfoot>
                                   </table>
@@ -236,7 +254,7 @@
                           </div>
                       </div>
 
-                    <app-spiner *ngIf="loading"></app-spiner>
+
                     <!-- Content Row -->
 
                     <div class="row">

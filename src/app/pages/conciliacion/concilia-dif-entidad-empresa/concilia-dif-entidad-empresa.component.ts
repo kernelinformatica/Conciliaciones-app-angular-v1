@@ -1,42 +1,37 @@
-import {
-  Component,
-  Inject,
-  PLATFORM_ID,
-  RendererFactory2,
-} from '@angular/core';
-import { Usuario } from '../../../models/usuario';
+import { CommonModule } from '@angular/common';
+import { Component, Inject, PLATFORM_ID, RendererFactory2 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Configuraciones } from '../../../../enviroments/configuraciones';
 import { TextosApp } from '../../../../enviroments/textos-app';
-import { Empresa } from '../../../models/empresa';
-import { Funciones } from '../../../models/funciones';
-import { ExportService } from '../../../services/export.service';
-import { GlobalService } from '../../../services/global.service';
-import { SubirArchivosService } from '../../../services/subir-archivos.service';
-import { ConciliacionesService } from '../../../services/conciliaciones-service.service';
-import { StyleService } from '../../../services/sytle.service';
-import { UiService } from '../../../services/ui.service';
-import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../components/sidebar/sidebar.component';
 import { SpinerComponent } from '../../../components/spiner/spiner.component';
 import { TopbarComponent } from '../../../components/topbar/topbar.component';
-import { MatTableModule } from '@angular/material/table';
-import { FormsModule } from '@angular/forms';
+import { Empresa } from '../../../models/empresa';
+import { Funciones } from '../../../models/funciones';
+import { Usuario } from '../../../models/usuario';
+import { ConciliacionesService } from '../../../services/conciliaciones-service.service';
+import { ExportService } from '../../../services/export.service';
+import { GlobalService } from '../../../services/global.service';
+import { StyleService } from '../../../services/sytle.service';
+import { UiService } from '../../../services/ui.service';
+
 @Component({
-  selector: 'app-concilia-informe',
-  imports: [
-    CommonModule,
+  selector: 'app-concilia-dif-entidad-empresa',
+  imports: [CommonModule,
     TopbarComponent,
     SidebarComponent,
     SpinerComponent,
     MatTableModule,
-    FormsModule,
-  ],
-  templateUrl: './concilia-informe.component.html',
-  styleUrl: './concilia-informe.component.css',
+    FormsModule,],
+  templateUrl: './concilia-dif-entidad-empresa.component.html',
+  styleUrl: './concilia-dif-entidad-empresa.component.css'
 })
-export class ConciliaInformeComponent {
+export class ConciliaDifEntidadEmpresaComponent {
+
+
   public usuarioLogueado!: Usuario;
   public empresa: Empresa[] = [];
   public usuarioConectado: Usuario[] = [];
@@ -55,7 +50,9 @@ export class ConciliaInformeComponent {
   fechaInfoActualizacion: string | '' | undefined;
   fechaSaldoActualizacion: string | '' | undefined;
   modalRespuestaConcilia: string | '' | undefined;
-
+  filtroConcepto: string = '';
+  filtroImporte: string = '';
+  filtroDetalle:string = '';
   bgColorSideBar = '';
   msgSobreDisponiblidadPDFCtacte = TextosApp.mensajeSobreDisponiblidadPDFCtacte;
   msgFechaActualizacion = TextosApp.mensajeFechaActualizacion;
@@ -64,7 +61,7 @@ export class ConciliaInformeComponent {
   loading : boolean = true;
   movimientos: any;
   todosSeleccionados: boolean = false;
-  movimientosConciliados: any[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -123,13 +120,13 @@ export class ConciliaInformeComponent {
     }, 5000);
 
     try {
-     this.conciliaService.getConciliaciones().subscribe({
+     this.conciliaService.getDifEntidadEmpresa().subscribe({
         next: (response: any) => {
           if (response?.control?.codigo === '200') {
             const control = response.control;
             this.movimientos = response.datos.map((item: any) => ({
               ...item,
-              seleccionado: false, // Agregar checkbox por defecto en false
+              //seleccionado: false, // Agregar checkbox por defecto en false
             }));
             this.cantidadMovimientos = this.movimientos.length;
             console.log('Movimientos recibidos:', this.movimientos);
@@ -240,41 +237,6 @@ export class ConciliaInformeComponent {
     this.exportService.exportToCsv('data.csv', data);
   };
 
-  descargarReporteCtaCte = () => {
-    /*this.reportesService.validarServicioReportePdf().subscribe(response => {
-        const url = Configuraciones.dominioBaseDescargaPdf+`/resumen-ctacte-${this.globalService.getUsuarioLogueado().cuenta.id}.pdf`
-        this.reportesService.descargarCtaCtePdf().subscribe((resp: any) => {});
-
-        this.verModarDescargaPdf = true;
-          setTimeout(() => {
-            this.verModarDescargaPdf = false;
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `resumen-ctacte-${this.globalService.getUsuarioLogueado().cuenta.id}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-
-          }, 2000); // 5000 milisegundos = 5 segundos de espera antes de ejecutar la descarga
-
-
-
-
-      })
-      error => {
-        // Maneja el error en la solicitud HTTP
-
-        let msg = "Error: El servicio de reportes pdf no esta disponible por el momento, intente nuevamente más tarde";
-        alert(msg)
-        console.error(msg);
-
-
-
-
-    }*/
-  };
 
   enableDismissTrigger(): void {
     // Implementación de enableDismissTrigger
@@ -283,43 +245,39 @@ export class ConciliaInformeComponent {
   CancelarConciliacion(): void {
 
     this.todosSeleccionados = false;
-    this.movimientosConciliados = [];
+
     this.movimientos.forEach((item) => (item.seleccionado = false));
   }
 
   confirmarConciliacion(): void {
 
-    this.movimientosConciliados = this.movimientos
+     this.movimientos = this.movimientosFiltrados()
       .filter((item) => item.seleccionado)
       .map((item) => ({
         ...item,
         cuenta_contable: item.cuenta_contable || '0' // Ajusta según sea necesario
       }));
 
-    console.log('Registros conciliados:', this.movimientosConciliados);
+    console.log('Registros procesados:', this.movimientos);
 }
   // TOTALIZADORES ///
+  movimientosFiltrados() {
+    return this.movimientos.filter(item =>
+      (!this.filtroConcepto || item.concepto.toLowerCase().includes(this.filtroConcepto.toLowerCase())) &&
+      (!this.filtroImporte || item.importe.toString().toLowerCase().includes(this.filtroImporte.toLowerCase()))
 
-  getTotalSaldo(): number {
-    return this.movimientosConciliados.reduce(
-      (total, item) => total + Number(item.saldo),
-      0
     );
   }
 
+
   getTotalImporte(): number {
-    return this.movimientosConciliados.reduce(
+    return this.movimientosFiltrados().reduce(
       (total, item) => total + Number(item.importe),
       0
     );
   }
 
-confirmarConcilacionFinal(){
-  const x = this.movimientosConciliados
 
-  alert("ENVIO EL OBJECTO MOVIMIENTOS CONCILIADOS AL SERVICIO QUE GRABA LA CONCILIACION DEFINITIVAMENTE " + JSON.stringify(this.movimientosConciliados.length));
-
-}
 
 validarCuentaContable(item: any): void {
   const regex = /^\d{1,10}$/; // Permite entre 1 y 10 dígitos
@@ -327,6 +285,49 @@ validarCuentaContable(item: any): void {
     item.cuenta_contable = item.cuenta_contable.slice(0, 10).replace(/\D/g, ''); // Limita a 10 números
   }
 }
+
+
+
+generarCsv():void{
+  const info = this.movimientosFiltrados()
+  debugger
+  info.filter(item => item.plan_cuentas && item.plan_cuentas > 0)
+    .map(item => ({
+      ingreso: item.m_ingreso,
+      concepto: item.concepto,
+      detalle: item.detalle,
+      plan_cuentas: item.plan_cuentas,
+      asiento: item.m_asiento,
+      nro_comp:item.nro_comp,
+      importe: item.importe,
+
+  }));
+
+   const csvContent = this.convertirAFormatoCSV(info);
+
+    // Crear un blob y descargar el archivo
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'diferencias-entidad-empresa.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+
+}
+convertirAFormatoCSV(datos: any[]): string {
+  if (!datos.length) return '';
+  // Obtener encabezados
+  const headers = Object.keys(datos[0]).join(',');
+  // Mapear los datos a formato CSV
+  const rows = datos.map(obj => Object.values(obj).join(','));
+  // Unir todo en un solo string con saltos de línea
+  return [headers, ...rows].join('\n');
+}
+
+
+
 
 
 }

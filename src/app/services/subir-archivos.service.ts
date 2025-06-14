@@ -12,7 +12,7 @@ private apiUrl = this.getURLServicio();
 
   constructor(private http: HttpClient,  private globalService: GlobalService) {}
 
-  subirArchivos(file1: File, file2: File): Observable<any> {
+  subirArchivos(file1: File, file2: File, cuentaConcilia: string): Observable<any> {
     const empresa =this.globalService.getEmpresa()
     const usuario = this.globalService.getUsuarioLogueado();
     const tipoConciliacion =1
@@ -22,8 +22,9 @@ private apiUrl = this.getURLServicio();
     formData.append('empresa', empresa['id']);
     formData.append('usuario', usuario['id']);
     formData.append('tipoConciliacion', tipoConciliacion.toString());
+    formData.append('cuentaConcilia', cuentaConcilia);
 
-    debugger
+
     return this.http.post(this.apiUrl, formData).pipe(
       catchError(this.handleError)
     );
