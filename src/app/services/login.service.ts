@@ -238,7 +238,6 @@ async consultarPedidoClave(hashIdPass: string,): Promise<any> {
     return Configuraciones.resumenUrl+cuenta;
   }
 
-
   public getUrlTestToken(usuario: string): string {
     return Configuraciones.authUrl + usuario + '/testToken';
   }
@@ -246,8 +245,6 @@ async consultarPedidoClave(hashIdPass: string,): Promise<any> {
   public getUrlConsultaPedidoCambioClave(): string {
     return Configuraciones.authUrl +'traerPedidoCambioClave';
   }
-
-
 // Verificar si el usuario está autenticado
  isAuthenticated(): any {
   return this.globalService.getUsuarioLogueado() !== null;

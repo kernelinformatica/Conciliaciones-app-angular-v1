@@ -293,14 +293,21 @@ getPermisoTipoComprobantesPermitidos(item):any{
 
   */
   setToken(data: any): void {
+
     localStorage.setItem("token", JSON.stringify(data));
+
  }
   getToken(): any {
+
     const token = localStorage.getItem('token');
+
     return token ? JSON.parse(token) : null;
+
   }
   getTokenHashId(): string {
+
     const token = localStorage.getItem('token');
+
     return token ? JSON.parse(token) : null;
   }
 
@@ -320,6 +327,7 @@ getPermisoTipoComprobantesPermitidos(item):any{
     localStorage.removeItem('hasEmpresa');
   }
   logout(): void {
+
     localStorage.removeItem('usuarioLogueado');
     localStorage.removeItem('hashEmpresa');
     localStorage.removeItem('token');

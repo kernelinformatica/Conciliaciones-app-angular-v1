@@ -1,3 +1,4 @@
+import { Control } from './../../../models/control';
 import { Component, Inject, PLATFORM_ID, RendererFactory2 } from '@angular/core';
 import { TextosApp } from '../../../../enviroments/textos-app';
 import { Configuraciones } from '../../../../enviroments/configuraciones';
@@ -56,6 +57,8 @@ public usuarioLogueado!: Usuario;
   cuentasContables:any;
   cantidadCuentasContables: number = 0;
   modalRespuestaConcilia: string;
+  abm :number = 0; // 0: Crear, 1: Editar, 2: Ver
+  control: Control = new Control({codigo: 0, mensaje: ''});
   http: any;
 
   constructor(
@@ -92,7 +95,7 @@ public usuarioLogueado!: Usuario;
 
       //this.errorMessage = ""
     }, 5000);
-    this.conciliaService.getCuentasContables(0).subscribe({
+    this.conciliaService.getCuentasContables(0,0).subscribe({
       next: (response: any) => {
         if (response?.control?.codigo === '200') {
           this.cuentasContables = response.datos;
@@ -105,27 +108,33 @@ public usuarioLogueado!: Usuario;
 
           console.log('Cuentas contables:', this.cuentasContables);
         } else {
+          debugger
           console.error(
             'Error en respuesta del servidor:',
             response.control.mensaje
           );
+          if (response.control.codigo === 401) {
+           this.logout()
+
+          }
           alert(`Error: ${response.control.mensaje}`);
         }
         this.loading = false
       },
       error: (error) => {
+
         console.error('Error al obtener cuentas contables:', error);
         alert('Ocurrió un error al obtener las cuentas contables.');
       },
     });
    //// llamamda a algun servicio
-    this.loading = false;
+   // this.loading = false;
   }
 
 
   ngOnInit(): void {
 
-
+    this.loading = true
     this.bgColorSideBar = this.styleService.getStyleTemplate(
       'navbar-nav',
       'background-color'
@@ -169,11 +178,53 @@ public usuarioLogueado!: Usuario;
 
 
 editarCuentaContable(item: any): void {
-alert("editar")
-  }
+  this.router.navigate(['plan-cuentas-editar'], { queryParams: { idCuentaContable: item.id } });
+
+}
 
   borrarCuentaContable(item: any): void {
-    alert("BORRAR")
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar esta cuenta contable?");
+
+    if (!confirmacion) {
+      return; // Si el usuario cancela, no ejecutamos el código de borrado.
+    }
+  this.abm = 2; // Establecer el modo de borrado
+  this.loading = true; // Mostrar el spinner de carga
+  this.conciliaService.getAbmCuentasContables(item, this.abm).subscribe({
+      next: (response: any) => {
+      this.control = response.control
+      if (response?.control?.codigo === '200') {
+
+
+        this.modalRespuestaConcilia = this.control.mensaje;
+        alert(this.modalRespuestaConcilia)
+        this.cargarInfo()
+       // this.nuevaCuenta = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
+
+        // Aquí puedes redirigir a otra página o realizar alguna acción adicional.
+
+      } else {
+        this.control = response.control
+        console.error(
+          'Error en respuesta del servidor:',
+          this.control.mensaje
+        );
+        alert(this.control.mensaje)
+        this.modalRespuestaConcilia = this.control.mensaje;
+        alert(this.modalRespuestaConcilia)
+      }
+      this.loading = false
+    },
+    error: (error) => {
+      this.modalRespuestaConcilia = this.control.mensaje;
+      alert(this.modalRespuestaConcilia)
+
+    },
+  });
+
+
+
+
   }
 
 

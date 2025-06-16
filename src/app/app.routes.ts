@@ -21,6 +21,8 @@ import { ConciliaTotalesConceptosComponent} from './pages/conciliacion/concilia-
 import { ConciliaDifEmpresaEntidadComponent } from './pages/conciliacion/concilia-dif-empresa-entidad/concilia-dif-empresa-entidad.component';
 import { ConciliaDifEntidadEmpresaComponent } from './pages/conciliacion/concilia-dif-entidad-empresa/concilia-dif-entidad-empresa.component';
 import { PlanCuentasComponent } from './pages/abm/plan-cuentas/plan-cuentas.component';
+import { PlanCuentasEditarComponent } from './pages/abm/plan-cuentas-editar/plan-cuentas-editar.component';
+import { ParametrosComponent } from './pages/abm/parametros/parametros.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -44,6 +46,10 @@ export const routes: Routes = [
   { path: 'cambio-clave-de-acceso', component: CambiarClaveComponent, canActivate: [AuthGuard]},
   { path: 'plan-cuentas', component: PlanCuentasComponent, canActivate: [AuthGuard]},
   { path: 'plan-cuentas-crear', component: PlanCuentasCrearComponent, canActivate: [AuthGuard]},
+  { path: 'plan-cuentas-editar', component: PlanCuentasEditarComponent, canActivate: [AuthGuard]},
+  { path: 'parametros', component: ParametrosComponent, canActivate: [AuthGuard]},
+
+
 
   { path: '**', redirectTo: '/login', pathMatch: 'full' },
 

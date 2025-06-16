@@ -14,13 +14,38 @@ export class ConciliacionesService   {
 
 
 
+  getParametros(grupo, nombre_parametro): Observable<any> {
+    const usuario = this.globalService.getUsuarioLogueado();
+    const url = this.getURLTraerParametros();
+    const tokenHashId = this.globalService.getTokenHashId();
+    const empresa = this.globalService.getEmpresa();
+    const params = {
+      token: tokenHashId["token"],
+      id_usuario: usuario["id"],
+      id_empresa: empresa["id"],
+      id_conciliacion: 1,
+      grupo :grupo,
+      nombre_parametro : nombre_parametro
 
+    };
+
+    console.log("Enviando petición con estos parámetros:", params);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.post(url, params, httpOptions);
+  }
 
   getConciliaciones(): Observable<any> {
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getURLServicioConciliacion();
     const tokenHashId = this.globalService.getTokenHashId();
     const empresa = this.globalService.getEmpresa();
+    debugger
     const params = {
       token: tokenHashId["token"],
       id_usuario: usuario["id"],
@@ -45,7 +70,7 @@ export class ConciliacionesService   {
     const url = this.getServcioUrlAbmCuentas();
     const tokenHashId = this.globalService.getTokenHashId();
     const empresa = this.globalService.getEmpresa();
-
+    debugger
     const params = {
       token: tokenHashId["token"],
       id_usuario: usuario["id"],
@@ -94,7 +119,7 @@ export class ConciliacionesService   {
 
 
   getDifEntidadEmpresa(): Observable<any> {
-    alert("Diferencias Entidad Empresa")
+
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getURLServicioEntidadEmpresa();
     const tokenHashId = this.globalService.getTokenHashId();
@@ -145,7 +170,7 @@ export class ConciliacionesService   {
 
 
 
-  getCuentasContables(idTipo=0): Observable<any> {
+  getCuentasContables(idTipo=0, idCuenta=0): Observable<any> {
     // id_tipo = 0 // 0 para todas las cuentas contables, 1 para cuentas de empresa, 2 para cuentas de gastos
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getServcioUrlCtasCbles();
@@ -156,7 +181,8 @@ export class ConciliacionesService   {
       token: tokenHashId["token"],
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
-      id_tipo :idTipo // 1 para cuenta a conciliar de empresa, 2 para para cuentas de gastos
+      id_tipo :idTipo,
+      id_cuenta: idCuenta// 1 para cuenta a conciliar de empresa, 2 para para cuentas de gastos
     };
 
 
@@ -199,6 +225,9 @@ export class ConciliacionesService   {
    */
   private getURLServicioConciliacion(): string {
     return Configuraciones.urlBase+"/concilia/traer-conciliacion";
+  }
+  private getURLTraerParametros(): string {
+    return Configuraciones.urlBase+"/concilia/traer-parametros";
   }
   private getURLServicioEmpresaEntidad(): string {
     return Configuraciones.urlBase+"/concilia/traer-dif-empresa-entidad";

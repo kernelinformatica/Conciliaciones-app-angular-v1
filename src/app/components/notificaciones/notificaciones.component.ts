@@ -168,7 +168,7 @@ marcarComoLeido(notificacion, visto) {
       }, 5000);
       try {
 
-        this.notificacionesService.getNotificaciones().subscribe((response: any) => {
+       /* this.notificacionesService.getNotificaciones().subscribe((response: any) => {
           this.notificaciones = response.datos.mensajes
           this.cantidadMensajes = response.datos.mensajes.length
           this.cantidadMensajesVistos = this.notificaciones.filter(notificacion => !notificacion.visto).length;
@@ -176,7 +176,7 @@ marcarComoLeido(notificacion, visto) {
 
           this.loading = false
 
-        });
+        });*/
 
 
 

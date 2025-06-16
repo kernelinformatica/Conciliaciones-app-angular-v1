@@ -20,17 +20,17 @@ import { UiService } from '../../../services/ui.service';
 import { Control } from '../../../models/control';
 
 @Component({
-  selector: 'app-plan-cuentas-crear',
+  selector: 'app-plan-cuentas-editar',
   imports: [CommonModule,
     TopbarComponent,
     SidebarComponent,
     SpinerComponent,
     MatTableModule,
     FormsModule,],
-  templateUrl: './plan-cuentas-crear.component.html',
-  styleUrl: './plan-cuentas-crear.component.css'
+  templateUrl: './plan-cuentas-editar.component.html',
+  styleUrl: './plan-cuentas-editar.component.css'
 })
-export class PlanCuentasCrearComponent {
+export class PlanCuentasEditarComponent {
   public usuarioLogueado!: Usuario;
   public empresa: Empresa[] = [];
   public usuarioConectado: Usuario[] = [];
@@ -53,9 +53,12 @@ export class PlanCuentasCrearComponent {
   movimientos: any;
   todosSeleccionados: boolean = false;
   cuentasContablesTipo:any;
+  cuentasContables:any;
+  cantidadCuentasContables: number = 0;
   cantidadTiposCtaCble: number = 0;
-  nuevaCuenta: TipoCuentasContables = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
+  modificaCuenta: TipoCuentasContables = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
   modalRespuestaConcilia: string;
+  idCuentaContable: number = 0;
   control: Control = new Control({codigo: 0, mensaje: ''});
   abm:number = 0; // 0: Crear, 1: Editar, 2: Ver
   http: any;
@@ -73,25 +76,25 @@ export class PlanCuentasCrearComponent {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-
-
   onSubmit() {
+
     this.loading = true
-    this.abm = 1
-    this.nuevaCuenta.tipo_cuenta = this.cuentasContablesTipo.tipo_cuenta
-    this.nuevaCuenta.descripcion = this.cuentasContablesTipo.descripcion
-    this.nuevaCuenta.plan_cuentas = this.cuentasContablesTipo.plan_cuentas
+    this.abm = 3; // 0: Crear, 1: Editar, 2: Ver, 3: Modificar
+    this.modificaCuenta.tipo_cuenta = this.cuentasContables[0].tipo_cuenta_id
+    this.modificaCuenta.descripcion = this.cuentasContables[0].descripcion
+    this.modificaCuenta.plan_cuentas = this.cuentasContables[0].plan_cuentas
+    this.modificaCuenta.id = this.idCuentaContable;
 
 
 
-    this.conciliaService.getAbmCuentasContables(this.nuevaCuenta, this.abm).subscribe({
+    this.conciliaService.getAbmCuentasContables(this.modificaCuenta, this.abm).subscribe({
       next: (response: any) => {
       this.control = response.control
       if (response?.control?.codigo === '200') {
 
 
         this.modalRespuestaConcilia = this.control.mensaje;
-        this.nuevaCuenta = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
+        this.modificaCuenta = new TipoCuentasContables({id: this.idCuentaContable, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
 
         // Aquí puedes redirigir a otra página o realizar alguna acción adicional.
 
@@ -102,14 +105,14 @@ export class PlanCuentasCrearComponent {
           this.control.mensaje
         );
         this.modalRespuestaConcilia = this.control.mensaje;
-        this.nuevaCuenta = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
+        this.modificaCuenta = new TipoCuentasContables({id: this.idCuentaContable, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
 
       }
       this.loading = false
     },
     error: (error) => {
       this.modalRespuestaConcilia = this.control.mensaje;
-      this.nuevaCuenta = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
+      this.modificaCuenta = new TipoCuentasContables({id: this.idCuentaContable, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
 
     },
   });
@@ -125,7 +128,49 @@ export class PlanCuentasCrearComponent {
 
       //this.errorMessage = ""
     }, 5000);
-    this.conciliaService.getTipoCuentasContables().subscribe({
+    this.route.queryParams.subscribe(params => {
+      this.idCuentaContable = params['idCuentaContable'];
+      this.conciliaService.getCuentasContables(0, this.idCuentaContable).subscribe({
+        next: (response: any) => {
+          if (response?.control?.codigo === '200') {
+            this.cuentasContables = response.datos;
+            this.cuentasContables = response.datos.map((item: any) => ({
+              ...item
+
+
+            }));
+            this.cantidadCuentasContables = this.cuentasContables.length;
+
+
+          } else {
+            debugger
+            console.error(
+              'Error en respuesta del servidor:',
+              response.control.mensaje
+            );
+            if (response.control.codigo === 401) {
+             this.logout()
+
+            }
+            alert(`Error: ${response.control.mensaje}`);
+          }
+          this.loading = false
+        },
+        error: (error) => {
+          debugger
+          console.error('Error al obtener cuentas contables:', error);
+          alert('Ocurrió un error al obtener las cuentas contables.');
+        },
+      });
+      // Aquí puedes utilizar el ID para cargar los datos necesarios
+    });
+
+   //// llamamda a algun servicio
+    this.loading = false;
+  }
+
+  getTraerTipoCuentaContable(tipoCuenta: number): void {
+    /* this.conciliaService.getTipoContables(tipoCuenta).subscribe({
       next: (response: any) => {
         if (response?.control?.codigo === '200') {
           this.cuentasContablesTipo = response.datos;
@@ -150,12 +195,13 @@ export class PlanCuentasCrearComponent {
         console.error('Error al obtener cuentas contables:', error);
         alert('Ocurrió un error al obtener las cuentas contables.');
       },
-    });
+    });*/
+
    //// llamamda a algun servicio
     this.loading = false;
+
+
   }
-
-
 
   ngOnInit(): void {
 
@@ -201,14 +247,15 @@ export class PlanCuentasCrearComponent {
     }
   }
 
-  logout() {
-    this.router.navigate(['/logout']);
-  }
+    logout() {
+      this.router.navigate(['/logout']);
+    }
 
-  irAlhome() {
-    this.router.navigate(['conciliacion']);
-  }
-  irACuentasContables(){
-    this.router.navigate(['plan-cuentas']);
-  }
+    irAlhome() {
+      this.router.navigate(['conciliacion']);
+    }
+    irACuentasContables(){
+      this.router.navigate(['plan-cuentas']);
+    }
+
 }

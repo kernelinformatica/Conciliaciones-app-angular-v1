@@ -174,7 +174,7 @@ export class ConciliaTotalesConceptosComponent {
     traigo las cuentas contables cargadas para el cliente
     */
 
-    this.conciliaService.getCuentasContables().subscribe({
+    this.conciliaService.getCuentasContables(2).subscribe({
       next: (response: any) => {
         if (response?.control?.codigo === '200') {
           this.cuentasContables = response.datos;
@@ -327,7 +327,7 @@ export class ConciliaTotalesConceptosComponent {
   }
 
   CancelarConciliacion(): void {
-    alert("CANCELAR")
+
     this.todosSeleccionados = false;
     this.movimientosConciliados = [];
     this.movimientos.forEach((item) => (item.seleccionado = false));

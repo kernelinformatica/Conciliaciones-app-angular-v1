@@ -36,23 +36,29 @@
   <hr class="sidebar-divider" *ngIf="this.cambioClave > 0">
   <div *ngIf="this.cambioClave > 0">
 
-    <li *ngFor="let item of menu" class="nav-item"  >
-      <a  class="nav-link collapsed" href="#"
+    <li *ngFor="let item of menu" class="nav-item">
+      <a class="nav-link collapsed"
+         [routerLink]="item.nombre === 'Salir' ? '/logout' : null"
+         href="#"
          data-toggle="collapse" [attr.data-target]="'#'+item.id"
          [ngStyle]="{'color': getStyleTemplate('nav-item .nav-link', 'color')}"
          aria-expanded="true">
         <i class="{{ item.icono }}"></i>
-        <span>{{ item.nombre }}</span>
+        <span>{{ item.nombre }} </span>
       </a>
+
       <div *ngIf="item.hijos.length > 0" [id]="item.id" class="collapse">
         <div class="bg-white py-2 collapse-inner rounded">
           <h6 class="collapse-header">{{ item.nombre }}:</h6>
-          <a *ngFor="let hijo of item.hijos" class="collapse-item" (click)="irAModulo(hijo)">
+          <a *ngFor="let hijo of item.hijos"
+             class="collapse-item"
+             (click)="irAModulo(hijo)">
             {{ hijo.nombre }}
           </a>
         </div>
       </div>
     </li>
+
   </div>
 
   <!-- Divider -->

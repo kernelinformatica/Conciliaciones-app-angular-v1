@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Conciliaciones - Crear Cuenta Contable</title>
+    <title>Parámetros</title>
 
 
 
@@ -40,9 +40,9 @@
                  <div class="container-fluid">
 
                   <!-- Tabla de Cuentas Contables -->
-                  <div class="card shadow mb-4">
+                  <div class="card shadow mb-12">
                     <div class="card-header py-3">
-                      <h6 class="m-0 font-weight-bold text-primary">Crear Cuenta Contable</h6>
+                      <h6 class="m-0 font-weight-bold text-primary">PARAMETROS</h6>
                     </div>
 
                     <div class="card-body">
@@ -50,9 +50,8 @@
                         <strong>Resultado:</strong> {{this.modalRespuestaConcilia}}
                         <br>
                         <hr>
-                        <a (click)="irACuentasContables()"  class="alert-link"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> Volver</a>
-                        <hr>
-                        <a (click)="irAlhome()"  class="alert-link"><i class="fa fa-power-off" aria-hidden="true"></i> Salir</a>
+                        <a (click)="irAlhome()"  class="alert-link"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i> Volver</a>
+
                       </div>
 
 
@@ -61,29 +60,22 @@
 
 
                       <div *ngIf="this.control.codigo != 200">
-                      <form (ngSubmit)="onSubmit()" #altaCuentaForm="ngForm" class="form-group" >
-                        <div class="row mb-6">
-                          <div class="col-md-12">
-                            <label for="tipo_cuenta_nombre" class="form-label">Tipo de Cuenta</label>
-                            <select id="tipo_cuenta_nombre" name="tipo_cuenta_nombre" class="form-control" [(ngModel)]="cuentasContablesTipo.tipo_cuenta" required>
-                              <option *ngFor="let tipo of cuentasContablesTipo" [value]="tipo.id">{{ tipo.nombre }}</option>
-                            </select>
-                          </div>
+                      <form (ngSubmit)="onSubmit()" #modificaForm="ngForm" class="form-group" >
+                        <div class="row mb-12">
 
                           <div class="col-md-12">
-                            <br>
-                            <label for="descripcion" class="form-label">Nombre</label>
-                            <input type="text" id="descripcion" name="descripcion" class="form-control" [(ngModel)]="cuentasContablesTipo.descripcion" required>
-                          </div>
+                            <label for="tipo_cuenta_nombre" class="form-label">Cantidad de dígitos a conciliar</label>
 
-                          <div class="col-md-12">
-                            <br>
-                            <label for="plan_cuentas" class="form-label">Número de Cuenta</label>
-                            <input type="text" id="plan_cuentas" name="plan_cuentas" class="form-control"
-                            [(ngModel)]="cuentasContablesTipo.plan_cuentas"
-                            required maxlength="15" pattern="^\d{1,15}$" placeholder="Ingrese un máximo de 15 valores numericos">
+                            <input type="number" id="cantidad_digitos_concilia" name="tipo_cuenta_nombre" class="form-control" [(ngModel)]="this.parametros[0].valor" min="0" max="99" onfocus="this.blur()">
+
+
+                            <small>Ingrese la cantidad y/o presición deseado. El sistema tomará este valor para realizar la conciliación en sus archivos. Cuanto más digitos, más presiso será el resultado final.</small>
+
 
                           </div>
+
+
+
                         </div>
                         <br  *ngIf="this.control.codigo != 200 && this.control.codigo != 0">
                         <div class="alert alert-danger" style="font-size: 11px;" role="alert" *ngIf="this.control.codigo != 200 && this.control.codigo != 0">
@@ -95,7 +87,7 @@
                         <div >
                           <br>
                           <div class="col-md-12 text-end">
-                            <button type="submit" class="btn btn-primary w-100" [disabled]="!altaCuentaForm.valid">Dar de alta</button>
+                            <button type="submit" class="btn btn-primary w-100" [disabled]="!modificaForm.valid">Modificar</button>
                           </div>
                         </div>
                       </form>

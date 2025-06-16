@@ -1,20 +1,21 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Funciones } from '../../models/funciones';
 import { Empresa } from '../../models/empresa';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { GlobalService } from '../../services/global.service';
 import { Usuario } from '../../models/usuario';
 import { CommonModule } from '@angular/common';
 import { TemplateEstilos } from '../../models/template-estilos';
 import { Template } from '../../models/template';
 import { MenuItem } from '../../models/menuItem';
+import { NgModule } from '@angular/core';
 import { StyleService } from '../../services/sytle.service';
 
 import 'bootstrap';
 import { SidebarService } from '../../services/sidebar.service';
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })

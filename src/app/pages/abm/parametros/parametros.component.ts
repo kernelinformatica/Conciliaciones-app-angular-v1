@@ -19,18 +19,19 @@ import { StyleService } from '../../../services/sytle.service';
 import { UiService } from '../../../services/ui.service';
 import { Control } from '../../../models/control';
 
+
 @Component({
-  selector: 'app-plan-cuentas-crear',
+  selector: 'app-parametros',
   imports: [CommonModule,
     TopbarComponent,
     SidebarComponent,
     SpinerComponent,
     MatTableModule,
     FormsModule,],
-  templateUrl: './plan-cuentas-crear.component.html',
-  styleUrl: './plan-cuentas-crear.component.css'
+  templateUrl: './parametros.component.html',
+  styleUrl: './parametros.component.css'
 })
-export class PlanCuentasCrearComponent {
+export class ParametrosComponent {
   public usuarioLogueado!: Usuario;
   public empresa: Empresa[] = [];
   public usuarioConectado: Usuario[] = [];
@@ -52,9 +53,9 @@ export class PlanCuentasCrearComponent {
   loading : boolean = true;
   movimientos: any;
   todosSeleccionados: boolean = false;
-  cuentasContablesTipo:any;
-  cantidadTiposCtaCble: number = 0;
-  nuevaCuenta: TipoCuentasContables = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
+  parametros:any;
+  cantidadParametros: number = 0;
+
   modalRespuestaConcilia: string;
   control: Control = new Control({codigo: 0, mensaje: ''});
   abm:number = 0; // 0: Crear, 1: Editar, 2: Ver
@@ -74,45 +75,15 @@ export class PlanCuentasCrearComponent {
   ) {}
 
 
-
   onSubmit() {
+
     this.loading = true
-    this.abm = 1
-    this.nuevaCuenta.tipo_cuenta = this.cuentasContablesTipo.tipo_cuenta
-    this.nuevaCuenta.descripcion = this.cuentasContablesTipo.descripcion
-    this.nuevaCuenta.plan_cuentas = this.cuentasContablesTipo.plan_cuentas
+    this.abm = 3; // 0: Crear, 1: Editar, 2: Ver, 3: Modificar
 
 
 
-    this.conciliaService.getAbmCuentasContables(this.nuevaCuenta, this.abm).subscribe({
-      next: (response: any) => {
-      this.control = response.control
-      if (response?.control?.codigo === '200') {
 
 
-        this.modalRespuestaConcilia = this.control.mensaje;
-        this.nuevaCuenta = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
-
-        // Aquí puedes redirigir a otra página o realizar alguna acción adicional.
-
-      } else {
-        this.control = response.control
-        console.error(
-          'Error en respuesta del servidor:',
-          this.control.mensaje
-        );
-        this.modalRespuestaConcilia = this.control.mensaje;
-        this.nuevaCuenta = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
-
-      }
-      this.loading = false
-    },
-    error: (error) => {
-      this.modalRespuestaConcilia = this.control.mensaje;
-      this.nuevaCuenta = new TipoCuentasContables({id: 0, tipo_cuenta: 0, descripcion: '', plan_cuentas: ''});
-
-    },
-  });
 
 
    // Aquí puedes agregar la lógica para guardar la cuenta en la base de datos.
@@ -120,37 +91,60 @@ export class PlanCuentasCrearComponent {
 
   async cargarInfo(): Promise<any> {
     // Simular una llamada al servicio para obtener los movimientos
+    /*
+    token = data.get('token')
+    userId = data.get('id_usuario')
+    clientId = data.get('id_empresa')
+    idConcilia = data.get('id_concilia')
+    grupo = data.get('grupo', None)
+    codigo = data.get('codigo', None)
+    nombreParametro = data.get('nombre_parametro', None)
+
+    */
+
+
 
     setTimeout(() => {
 
       //this.errorMessage = ""
     }, 5000);
-    this.conciliaService.getTipoCuentasContables().subscribe({
+
+
+    this.conciliaService.getParametros("comprobantes", "digitos-conciliar").subscribe({
       next: (response: any) => {
         if (response?.control?.codigo === '200') {
-          this.cuentasContablesTipo = response.datos;
-          this.cuentasContablesTipo = response.datos.map((item: any) => ({
+          this.parametros = response.datos;
+          this.parametros = response.datos.map((item: any) => ({
             ...item
 
 
           }));
+          this.cantidadParametros = this.parametros.length;
 
 
-          console.log('Tipos de cuentas:', this.cuentasContablesTipo);
         } else {
+          debugger
           console.error(
             'Error en respuesta del servidor:',
             response.control.mensaje
           );
+          if (response.control.codigo === 401) {
+           this.logout()
+
+          }
           alert(`Error: ${response.control.mensaje}`);
         }
         this.loading = false
       },
       error: (error) => {
+        debugger
         console.error('Error al obtener cuentas contables:', error);
         alert('Ocurrió un error al obtener las cuentas contables.');
       },
     });
+
+
+
    //// llamamda a algun servicio
     this.loading = false;
   }
@@ -201,14 +195,15 @@ export class PlanCuentasCrearComponent {
     }
   }
 
-  logout() {
-    this.router.navigate(['/logout']);
-  }
+    logout() {
+      this.router.navigate(['/logout']);
+    }
 
-  irAlhome() {
-    this.router.navigate(['conciliacion']);
-  }
-  irACuentasContables(){
-    this.router.navigate(['plan-cuentas']);
-  }
+    irAlhome() {
+      this.router.navigate(['conciliacion']);
+    }
+
+
+
+
 }
