@@ -64,6 +64,7 @@ export class LoginService {
           this.templateActivo = data.empresa.templates
           this.globalService.settemplateActivo(this.templateActivo)
           this.globalService.setToken(data.token);
+          
           this.logueado = true;
           this.versionGestagro = control.versionLib;
           this.versionServicio = control.version;

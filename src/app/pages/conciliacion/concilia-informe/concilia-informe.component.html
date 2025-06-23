@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Conciliaciones Bancarias - Iportación de Datos</title>
+    <title>Conciliaciones Bancarias - Movimientos Conciliados</title>
 
 
 
@@ -41,7 +41,7 @@
                   <nav aria-label="breadcrumb" class="custom-breadcrumb">
                     <ol class="breadcrumb">
                       <li class="breadcrumb-item"><a (click)="irAlhome()">Inicio</a></li>
-                         <li class="breadcrumb-item active" aria-current="page">Informe de Conciliación</li>
+                         <li class="breadcrumb-item active" aria-current="page">Movimientos Conciliados</li>
                     </ol>
                   </nav>
 
@@ -80,7 +80,7 @@
 
 
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}" >CONCILIACION</h6> <div *ngIf="cantidadMovimientos > 0"><small>{{ "Cantidad de movmientos sin conciliar "  }}</small>  <span class="badge badge-success">{{cantidadMovimientos }}</span></div>
+                            <h6 class="m-0 font-weight-bold" [ngStyle]="{'color' : getStyleTemplate('title','color' )}" >MOVIMIENTOS CONCILIADOS</h6> <div *ngIf="cantidadMovimientos > 0"><small>{{ "Movimientos conciliados "  }}</small>  <span class="badge badge-success">{{cantidadMovimientos }}</span></div>
                         </div>
                         <div class="card-body">
 

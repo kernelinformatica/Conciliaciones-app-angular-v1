@@ -1,5 +1,5 @@
 import { Configuraciones } from './../../enviroments/configuraciones';
-import { Injectable } from '@angular/core';
+import { Injectable, NgProbeToken } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { GlobalService } from './global.service';
@@ -13,14 +13,27 @@ export class ConciliacionesService   {
   constructor(private http: HttpClient,  private globalService: GlobalService) {}
 
 
-
+  tokenHashId : any;
   getParametros(grupo, nombre_parametro): Observable<any> {
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getURLTraerParametros();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId = this.globalService.getTokenHashId();
+    let token: string | undefined;
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
     const empresa = this.globalService.getEmpresa();
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
       id_conciliacion: 1,
@@ -43,11 +56,24 @@ export class ConciliacionesService   {
   getConciliaciones(): Observable<any> {
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getURLServicioConciliacion();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId = this.globalService.getTokenHashId();
+    let token: string | undefined;
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
     const empresa = this.globalService.getEmpresa();
     debugger
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
       id_conciliacion: 1
@@ -68,11 +94,24 @@ export class ConciliacionesService   {
   getAbmCuentasContables(cuentaContable, abm): Observable<any> {
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getServcioUrlAbmCuentas();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId = this.globalService.getTokenHashId();
+    let token: string | undefined;
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
     const empresa = this.globalService.getEmpresa();
     debugger
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
       abm : abm, // 0 para crear, 1 para editar, 2 para ver
@@ -96,11 +135,24 @@ export class ConciliacionesService   {
   getTotales(): Observable<any> {
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getServcioUrlTotales();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId = this.globalService.getTokenHashId();
+    let token: string | undefined;
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
     const empresa = this.globalService.getEmpresa();
 
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
       id_conciliacion: 1
@@ -122,10 +174,23 @@ export class ConciliacionesService   {
 
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getURLServicioEntidadEmpresa();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId = this.globalService.getTokenHashId();
+    let token: string | undefined;
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
     const empresa = this.globalService.getEmpresa();
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
       id_conciliacion: 1
@@ -145,10 +210,25 @@ export class ConciliacionesService   {
   getDifEmpresaEntidad(): Observable<any> {
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getURLServicioEmpresaEntidad();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId = this.globalService.getTokenHashId();
+    let token: string | undefined;
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      // Verificamos si tiene la propiedad "token"
+
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
     const empresa = this.globalService.getEmpresa();
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
       id_conciliacion: 1
@@ -167,18 +247,38 @@ export class ConciliacionesService   {
 
 
 
-
-
-
   getCuentasContables(idTipo=0, idCuenta=0): Observable<any> {
     // id_tipo = 0 // 0 para todas las cuentas contables, 1 para cuentas de empresa, 2 para cuentas de gastos
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getServcioUrlCtasCbles();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId  = this.globalService.getTokenHashId() 
+    let token: string | undefined;
+    
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      // Verificamos si tiene la propiedad "token"
+
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
+    
+    
+    
+
+    
+    
+
     const empresa = this.globalService.getEmpresa();
 
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
       id_tipo :idTipo,
@@ -199,11 +299,27 @@ export class ConciliacionesService   {
   getTipoCuentasContables(){
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getServcioUrlCtasCblesTipo();
-    const tokenHashId = this.globalService.getTokenHashId();
+    this.tokenHashId  = this.globalService.getTokenHashId() 
+    let token: string | undefined;
+    
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      // Verificamos si tiene la propiedad "token"
+
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+        
+      }else{
+        token = this.tokenHashId.token.token;
+        
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+      
+    }
     const empresa = this.globalService.getEmpresa();
 
     const params = {
-      token: tokenHashId["token"],
+      token: token,
       id_usuario: usuario["id"],
       id_empresa: empresa["id"],
 
