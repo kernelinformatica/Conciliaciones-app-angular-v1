@@ -22,14 +22,14 @@ export class ConciliacionesService   {
     if (this.tokenHashId && typeof this.tokenHashId === 'object') {
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
+
     }
     const empresa = this.globalService.getEmpresa();
     const params = {
@@ -61,14 +61,14 @@ export class ConciliacionesService   {
     if (this.tokenHashId && typeof this.tokenHashId === 'object') {
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
+
     }
     const empresa = this.globalService.getEmpresa();
     debugger
@@ -99,14 +99,14 @@ export class ConciliacionesService   {
     if (this.tokenHashId && typeof this.tokenHashId === 'object') {
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
+
     }
     const empresa = this.globalService.getEmpresa();
     debugger
@@ -140,14 +140,14 @@ export class ConciliacionesService   {
     if (this.tokenHashId && typeof this.tokenHashId === 'object') {
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
+
     }
     const empresa = this.globalService.getEmpresa();
 
@@ -179,14 +179,14 @@ export class ConciliacionesService   {
     if (this.tokenHashId && typeof this.tokenHashId === 'object') {
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
+
     }
     const empresa = this.globalService.getEmpresa();
     const params = {
@@ -217,14 +217,14 @@ export class ConciliacionesService   {
 
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
+
     }
     const empresa = this.globalService.getEmpresa();
     const params = {
@@ -244,36 +244,33 @@ export class ConciliacionesService   {
 
     return this.http.post(url, params, httpOptions);
   }
-
-
-
   getCuentasContables(idTipo=0, idCuenta=0): Observable<any> {
     // id_tipo = 0 // 0 para todas las cuentas contables, 1 para cuentas de empresa, 2 para cuentas de gastos
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getServcioUrlCtasCbles();
-    this.tokenHashId  = this.globalService.getTokenHashId() 
+    this.tokenHashId  = this.globalService.getTokenHashId()
     let token: string | undefined;
-    
+
     if (this.tokenHashId && typeof this.tokenHashId === 'object') {
       // Verificamos si tiene la propiedad "token"
 
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
-    }
-    
-    
-    
 
-    
-    
+    }
+
+
+
+
+
+
 
     const empresa = this.globalService.getEmpresa();
 
@@ -296,25 +293,65 @@ export class ConciliacionesService   {
     return this.http.post(url, params, httpOptions);
   }
 
+  confirmaConciliacionFinal(movimientosConciliados: any[] ): Observable<any> {
+    const usuario = this.globalService.getUsuarioLogueado();
+    const url =  this.gerServicioUrlCOnfirmarConciliacion();;
+    this.tokenHashId = this.globalService.getTokenHashId();
+    let token: string | undefined;
+    if (this.tokenHashId && typeof this.tokenHashId === 'object') {
+      if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
+        token = this.tokenHashId.token;
+
+      }else{
+        token = this.tokenHashId.token.token;
+
+      }
+    } else if (typeof this.tokenHashId === 'string') {
+      token = this.tokenHashId
+
+    }
+    const empresa = this.globalService.getEmpresa();
+
+    const params = {
+      token: token,
+      id_usuario: usuario["id"],
+      id_empresa: empresa["id"],
+
+      movimientos_conciliados: movimientosConciliados,
+
+    };
+    debugger
+    console.log("Enviando petición con estos parámetros:", params);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.post(url, params, httpOptions);
+
+  }
+
   getTipoCuentasContables(){
     const usuario = this.globalService.getUsuarioLogueado();
     const url = this.getServcioUrlCtasCblesTipo();
-    this.tokenHashId  = this.globalService.getTokenHashId() 
+    this.tokenHashId  = this.globalService.getTokenHashId()
     let token: string | undefined;
-    
+
     if (this.tokenHashId && typeof this.tokenHashId === 'object') {
       // Verificamos si tiene la propiedad "token"
 
       if ('token' in this.tokenHashId && typeof this.tokenHashId.token === 'string') {
         token = this.tokenHashId.token;
-        
+
       }else{
         token = this.tokenHashId.token.token;
-        
+
       }
     } else if (typeof this.tokenHashId === 'string') {
       token = this.tokenHashId
-      
+
     }
     const empresa = this.globalService.getEmpresa();
 
@@ -336,6 +373,9 @@ export class ConciliacionesService   {
     return this.http.post(url, params, httpOptions);
 
   }
+
+
+
   /**
    * Esta funcion devuelve la URL del servicio
    */
@@ -356,6 +396,9 @@ export class ConciliacionesService   {
   }
   private getServcioUrlCtasCbles(): string {
     return Configuraciones.urlBase+"/concilia/traer-cuentas-contables";
+  }
+  private gerServicioUrlCOnfirmarConciliacion(): string {
+    return Configuraciones.urlBase+"/concilia/confirmar-conciliacion-final";
   }
   private getServcioUrlCtasCblesTipo(): string {
     return Configuraciones.urlBase+"/concilia/traer-cuentas-contables-tipos";

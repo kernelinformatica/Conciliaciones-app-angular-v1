@@ -315,11 +315,80 @@ export class ConciliaInformeComponent {
   }
 
 confirmarConcilacionFinal(){
-  const x = this.movimientosConciliados
+  try {
+    this.conciliaService.confirmaConciliacionFinal(this.movimientosConciliados).subscribe({
+       next: (response: any) => {
+         if (response?.control?.codigo === '200') {
+           const control = response.control;
 
+           console.log('ConfirmaConcilacion:', this.movimientosConciliados);
+         } else {
+           console.error(
+             'Error en respuesta del servidor:',
+             response.control.mensaje
+           );
+
+           alert(`Error: ${response.control.mensaje}`);
+         }
+         this.loading = false;
+
+       },
+       error: (error) => {
+         this.logout();
+         console.error('Error en la petición:', error);
+         alert('Ocurrió un error al confirmar la conciliación.');
+       },
+     });
+   } catch (error: any) {
+     this.logout()
+     console.error('Error inesperado:', error);
+     alert('Ocurrió un error inesperado. Inténtalo de nuevo.');
+   }
   alert("ENVIO EL OBJECTO MOVIMIENTOS CONCILIADOS AL SERVICIO QUE GRABA LA CONCILIACION DEFINITIVAMENTE " + JSON.stringify(this.movimientosConciliados.length));
 
 }
+
+
+
+generarCsv():void{
+  debugger
+  alert(this.movimientosConciliados.length + " registros seleccionados para generar el CSV");
+  const obj = this.movimientosConciliados.map(item => ({
+      ingreso : new Date(item.m_ingreso).toISOString().split('T')[0],
+      asiento: item.asiento,
+      asiento_conciliacion: item.asiento_conciliacion,
+      codigo : item.codigo,
+      concepto: item.concepto,
+      detalle: item.detalle,
+      importe: item.importe,
+      plan_cuentas: item.plan_cuentas,
+      saldo : item.saldo,
+      cuenta_contable: item.cuenta_contable || '0' // Asegurarse de que siempre tenga un valor
+    }));
+
+   const csvContent = this.convertirAFormatoCSV(obj);
+
+    // Crear un blob y descargar el archivo
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'conciliacion.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+
+}
+convertirAFormatoCSV(datos: any[]): string {
+  if (!datos.length) return '';
+  // Obtener encabezados
+  const headers = Object.keys(datos[0]).join(',');
+  // Mapear los datos a formato CSV
+  const rows = datos.map(obj => Object.values(obj).join(','));
+  // Unir todo en un solo string con saltos de línea
+  return [headers, ...rows].join('\n');
+}
+
 
 validarCuentaContable(item: any): void {
   const regex = /^\d{1,10}$/; // Permite entre 1 y 10 dígitos

@@ -12,12 +12,11 @@ export class Configuraciones{
     public static appAutor = "Kernel Informática";
     public static appCopyright = "Kernel Informática, Cooperativa de Trabajo Ltda.";
     // desarrollo ///
-    
     //public static dominioBaseApp = "http://192.168.254.15:6010"
     // Produccion ///
     public static dominioBaseApp = "https://conciliaciones.kernelinformatica.com.ar/concilia-rest"
     public static urlBase : string = `${Configuraciones.dominioBaseApp}/api`;
-   
+
     // Web service que calcula las conciliaciones
     //Desarrollo
     //public static dominioBaseConcilia = "http://192.168.254.15:6009"
@@ -56,6 +55,7 @@ export class Configuraciones{
     public static mercadosUrl: string = `${Configuraciones.urlBase}/mercados/`;
     public static cerealesResumenUrl : string = `${Configuraciones.urlBase}/cereal-resumen/`;
     public static ordenesVentaUrl: string = `${Configuraciones.urlBase}/ordenes/`;
+
     public static conciliacionesUrl: string = `${Configuraciones.urlBaseConcilia}/conciliar_datos`;
 
   public static rutaLogos : string = "assets/images/";
