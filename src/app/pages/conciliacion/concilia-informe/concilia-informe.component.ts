@@ -320,15 +320,23 @@ confirmarConcilacionFinal(){
        next: (response: any) => {
          if (response?.control?.codigo === '200') {
            const control = response.control;
-
-           console.log('ConfirmaConcilacion:', this.movimientosConciliados);
+           this.movimientos = []
+           this.movimientosConciliados = []
+           this.cargarInfo();
+           alert(control.mensaje)
+           
+          
          } else {
+          this.movimientos = []
+           this.movimientosConciliados = []
+          const control = response.control;
+          alert(control.mensaje)
            console.error(
              'Error en respuesta del servidor:',
              response.control.mensaje
            );
 
-           alert(`Error: ${response.control.mensaje}`);
+         
          }
          this.loading = false;
 
