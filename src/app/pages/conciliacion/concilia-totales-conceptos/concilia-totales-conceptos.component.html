@@ -111,8 +111,8 @@
 
                                   <td class="text-end">{{ item.importe | number:'1.2-2' }}</td>
                                   <td>
-                                    <select [(ngModel)]="item.plan_cuentas" class="form-control">
-
+                                    <select [(ngModel)]="item.plan_cuentas" class="form-control" (ngModelChange)="onSeleccionarCuenta(item)">
+                                      <option [ngValue]="null">-- Seleccione --</option>  
                                       <option *ngFor="let cuenta of cuentasContables" [value]="cuenta.plan_cuentas">
                                         {{ cuenta.plan_cuentas }} - {{ cuenta.descripcion }}
                                       </option>
@@ -139,10 +139,10 @@
 
                           <div class="text-end mt-3">
 
-
+                          <!--
                             <button (click)="agregarItemAsientoTalesConceptos()"
                             [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
-                             class="btn btn-success mx-2">+</button>
+                             class="btn btn-success mx-2">+</button> -->
 
 
                           </div>
@@ -220,12 +220,12 @@
                               <button  (click)="cancelarAsientoConciliacion()"
                               [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
                                class="btn btn-success mx-2">Cancelar</button>
-                               <button (click)="generarCsv()"
+                               <button (click)="exportToCSVMaster()"
                               [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
-                               class="btn btn-success mx-2">Descargar CSV</button>
-                              <button (click)="agregarItemAsientoTalesConceptos()"
+                               class="btn btn-success mx-2">Exportar a CSV</button>
+                              <button (click)="exportToExcelMaster()"
                               [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
-                               class="btn btn-success mx-2">Confirmar Asiento Contable</button>
+                               class="btn btn-success mx-2">Exportar a Excel</button>
 
 
                             </div>
@@ -235,25 +235,7 @@
                          </div>
 
 
-
-
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-
-
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Content Column -->
-
-
-
-                    </div>
-
+                  
 
 
 

@@ -23,6 +23,8 @@ import { SpinerComponent } from '../../../components/spiner/spiner.component';
 import { TopbarComponent } from '../../../components/topbar/topbar.component';
 import { MatTableModule } from '@angular/material/table';
 import { FormsModule } from '@angular/forms';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 @Component({
   selector: 'app-concilia-totales-bancos',
   imports: [
@@ -374,7 +376,15 @@ agregarItemAsientoTalesConceptos(): void {
 
   console.debug('Total cuenta concilia:', this.totalCuentaConcilia);
 }
+onSeleccionarCuenta(item: any): void {
+  // Si se deseleccionó, limpiá el campo plan_cuentas
+  if (!item.plan_cuentas) {
+    item.plan_cuentas = null;
+  }
 
+  // Volvé a calcular para reflejar los cambios
+  this.agregarItemAsientoTalesConceptos();
+}
 
 cancelarAsientoConciliacion(): void {
   this.totalCuentaConcilia = 0;
@@ -432,6 +442,119 @@ validarCuentaContable(item: any): void {
   if (!regex.test(item.cuenta_contable)) {
     item.cuenta_contable = item.cuenta_contable.slice(0, 10).replace(/\D/g, ''); // Limita a 10 números
   }
+}
+
+
+exportToExcelMaster() {
+  let pase =1
+  const registros = this.totalesBancosFinal.map((item: any) => ({
+    m_ingreso: new Date().toISOString().split("T")[0],
+    m_asiento: 0,
+    m_pase: pase++,
+    codigo_libro: 0,
+    m_minuta: 0,
+    plan_cuentas: item.plan_cuentas && item.plan_cuentas !== 0
+    ? item.plan_cuentas
+    : item.plan_cuenta_concilia,
+
+    m_importe: item.importe ?? 0,
+    m_detalle: item.concepto ?? "",
+    concepto_codigo: 0,
+    m_unidades: 0,
+    tipo_comp: 0,
+    m_vence: "",
+    m_colum_iva: 0,
+    padron_codigo: 0,
+    operador_codigo: "",
+    m_asiento_rub: 0,
+    tipo_comp_asoc: 0,
+    nro_comp_asoc: 0,
+    nro_comp: 0,
+    autoriza_codigo: 0,
+    m_fecha_emi: new Date().toISOString().split("T")[0],
+    m_ctacte: item.plan_cuentas == 0 ? "S" : 'N',
+    cod_actividad: 0,
+    cond_iva: 0,
+    cond_gan: 0,
+    cotizacion: 1,
+    nro_comp_preimp: 0,
+    fechayhora: new Date().toISOString()
+  }));
+
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(registros);
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Registros': worksheet },
+    SheetNames: ['Registros']
+  };
+
+  const excelBuffer: any = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+
+  FileSaver.saveAs(blob, 'registros_master.xlsx');
+}
+
+
+exportToCSVMaster() {
+  let pase =1
+  const registros = this.totalesBancosFinal.map((item: any) => ({
+    m_ingreso: new Date().toISOString().split("T")[0],
+    m_asiento: 0,
+    m_pase: pase++,
+    codigo_libro: 0,
+    m_minuta: 0,
+    plan_cuentas: item.plan_cuentas && item.plan_cuentas !== 0
+    ? item.plan_cuentas
+    : item.plan_cuenta_concilia,
+
+    m_importe: item.importe ?? 0,
+    m_detalle: item.concepto ?? "",
+    concepto_codigo: 0,
+    m_unidades: 0,
+    tipo_comp: 0,
+    m_vence: "",
+    m_colum_iva: 0,
+    padron_codigo: 0,
+    operador_codigo: "",
+    m_asiento_rub: 0,
+    tipo_comp_asoc: 0,
+    nro_comp_asoc: 0,
+    nro_comp: 0,
+    autoriza_codigo: 0,
+    m_fecha_emi: new Date().toISOString().split("T")[0],
+    m_ctacte: item.plan_cuentas == 0 ? "S" : 'N',
+    cod_actividad: 0,
+    cond_iva: 0,
+    cond_gan: 0,
+    cotizacion: 1,
+    nro_comp_preimp: 0,
+    fechayhora: new Date().toISOString()
+  }));
+
+  const headers = Object.keys(registros[0]).join(",");
+  const rows = registros
+    .map((row) =>
+      Object.values(row)
+        .map((val) => `"${val}"`)
+        .join(",")
+    )
+    .join("\n");
+
+  const csvContent = `${headers}\n${rows}`;
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", "registros_master.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 

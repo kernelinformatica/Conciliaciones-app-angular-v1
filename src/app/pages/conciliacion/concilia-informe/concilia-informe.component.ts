@@ -47,6 +47,7 @@ export class ConciliaInformeComponent {
   public cantidadMovimientos: number = 0;
   public verModarDescargaPdf: boolean = false;
   public copyRigth: string = Configuraciones.kernelCopyRigth;
+  csvGrabado: boolean = false;
   permisos: string[] = [];
   public fechaHoy: Date;
   fechasIguales: boolean;
@@ -281,7 +282,7 @@ export class ConciliaInformeComponent {
   }
 
   CancelarConciliacion(): void {
-
+    this.csvGrabado = false; 
     this.todosSeleccionados = false;
     this.movimientosConciliados = [];
     this.movimientos.forEach((item) => (item.seleccionado = false));
@@ -316,6 +317,7 @@ export class ConciliaInformeComponent {
 
 confirmarConcilacionFinal(){
   try {
+    if (this.csvGrabado)
     this.conciliaService.confirmaConciliacionFinal(this.movimientosConciliados).subscribe({
        next: (response: any) => {
          if (response?.control?.codigo === '200') {
@@ -347,6 +349,8 @@ confirmarConcilacionFinal(){
          alert('Ocurrió un error al confirmar la conciliación.');
        },
      });
+     else {
+      alert("Debe generar el CSV antes de confirmar la conciliación");}
    } catch (error: any) {
      this.logout()
      console.error('Error inesperado:', error);
@@ -359,8 +363,9 @@ confirmarConcilacionFinal(){
 
 
 generarCsv():void{
-  debugger
-  alert(this.movimientosConciliados.length + " registros seleccionados para generar el CSV");
+  
+  //alert(this.movimientosConciliados.length + " registros seleccionados para generar el CSV");
+  this.csvGrabado = true;
   const obj = this.movimientosConciliados.map(item => ({
       ingreso : new Date(item.m_ingreso).toISOString().split('T')[0],
       asiento: item.asiento,

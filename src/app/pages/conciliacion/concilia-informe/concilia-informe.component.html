@@ -252,12 +252,14 @@
                                   </table>
                               </div>
                               <div class="text-end mt-3">
-                                  <button (click)="confirmarConcilacionFinal()" [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }" type="submit" class="btn btn-success mx-2">
+                                  
+                                  <button  [disabled]="!csvGrabado" (click)="confirmarConcilacionFinal()" [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }" type="submit" class="btn btn-success mx-2">
                                       Confirmar y Grabar
                                   </button>
-                                  <button  (click)="generarCsv()"
+                                  <button  *ngIf="!csvGrabado"  (click)="generarCsv()"
                                     [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }"
                                     class="btn btn-success mx-2">Grabar Csv</button>
+
                                   <button (click)="CancelarConciliacion()" [ngStyle]="{'color' : getStyleTemplate('btn','color' ), 'background-color': getStyleTemplate('btn','background-color' ) }" type="submit" class="btn btn-success mx-2">
                                       Cancelar
                                   </button>
